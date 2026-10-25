@@ -1,0 +1,1062 @@
+:root,
+[data-theme="light"] {
+  --bg-main: #FAF6F0;
+  --bg-elevated: #FFFFFF;
+  --bg-subtle: #F1EAE0;
+  --bg-board: #EDE4D7;
+  --text-main: #2F2A38;
+  --text-muted: #6E677A;
+  --border-soft: #E2D9C8;
+  --border-strong: #C9BCA8;
+  --shadow-card: 0 6px 0 #E2D9C8, 0 8px 18px rgba(47, 42, 56, 0.06);
+  --shadow-btn: 0 4px 0 #D8CEBE;
+  --shadow-inner: inset 0 3px 6px rgba(0, 0, 0, 0.06);
+
+  /* Calm kid-friendly palette */
+  --accent-primary: #5E7CE2;
+  --accent-primary-shadow: #425EC2;
+  --accent-primary-soft: #E8EEFC;
+
+  --accent-green: #48B884;
+  --accent-green-shadow: #339467;
+  --accent-green-soft: #E4F7EE;
+
+  --accent-amber: #F2A93B;
+  --accent-amber-shadow: #CF881D;
+  --accent-amber-soft: #FDF3E1;
+
+  --accent-coral: #E86F68;
+  --accent-coral-shadow: #C45049;
+  --accent-coral-soft: #FCEAE8;
+
+  --accent-purple: #9B72CF;
+  --accent-purple-shadow: #7851AC;
+  --accent-purple-soft: #F2EBF9;
+
+  --accent-teal: #38A3A5;
+  --accent-teal-shadow: #277E80;
+  --accent-teal-soft: #E3F4F4;
+}
+
+[data-theme="dark"] {
+  --bg-main: #181B24;
+  --bg-elevated: #232836;
+  --bg-subtle: #2C3244;
+  --bg-board: #1F2430;
+  --text-main: #F2EFE9;
+  --text-muted: #A6ADBF;
+  --border-soft: #363E54;
+  --border-strong: #4A5470;
+  --shadow-card: 0 6px 0 #11131A, 0 8px 20px rgba(0, 0, 0, 0.35);
+  --shadow-btn: 0 4px 0 #12151E;
+  --shadow-inner: inset 0 3px 6px rgba(0, 0, 0, 0.3);
+
+  --accent-primary: #6D89EC;
+  --accent-primary-shadow: #4964C4;
+  --accent-primary-soft: #263152;
+
+  --accent-green: #4CC48D;
+  --accent-green-shadow: #319668;
+  --accent-green-soft: #1F3B32;
+
+  --accent-amber: #F5B553;
+  --accent-amber-shadow: #C7892C;
+  --accent-amber-soft: #3E3322;
+
+  --accent-coral: #EC7C76;
+  --accent-coral-shadow: #BA544E;
+  --accent-coral-soft: #402629;
+
+  --accent-purple: #AC87DB;
+  --accent-purple-shadow: #7F5BAE;
+  --accent-purple-soft: #312844;
+
+  --accent-teal: #4BB6B8;
+  --accent-teal-shadow: #2F888A;
+  --accent-teal-soft: #1F383C;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  touch-action: manipulation;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+/* Layout Shell */
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top, 12px) 16px env(safe-area-inset-bottom, 24px);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 4px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-btn);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.brand-subtitle {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  box-shadow: var(--shadow-btn);
+  padding: 8px 14px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.pill-btn:active {
+  transform: translateY(2px);
+}
+
+.pill-btn.exit-btn {
+  background: var(--accent-coral-soft);
+  border-color: var(--accent-coral);
+  color: var(--accent-coral);
+  padding: 9px 16px;
+  font-size: 1rem;
+}
+
+.pill-btn.primary-btn {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary-shadow);
+  box-shadow: 0 4px 0 var(--accent-primary-shadow);
+  color: #FFFFFF;
+}
+
+.pill-btn.green-btn {
+  background: var(--accent-green);
+  border-color: var(--accent-green-shadow);
+  box-shadow: 0 4px 0 var(--accent-green-shadow);
+  color: #FFFFFF;
+}
+
+/* Category Filter Bar */
+.category-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 6px 2px 14px;
+  scrollbar-width: none;
+}
+.category-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  box-shadow: 0 3px 0 var(--border-soft);
+  font-weight: 700;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.cat-chip.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary-shadow);
+  box-shadow: 0 3px 0 var(--accent-primary-shadow);
+  color: #FFFFFF;
+}
+
+/* Game Grid on Home Page */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 16px;
+  padding-bottom: 28px;
+}
+
+@media (max-width: 520px) {
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.game-card {
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  border-radius: 24px;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.12s ease;
+  position: relative;
+}
+
+.game-card:active {
+  transform: translateY(3px);
+}
+
+.game-card-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.3rem;
+}
+
+.game-card-title {
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.game-card-skill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+/* Game Container & Header */
+.game-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 16px;
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--bg-subtle);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.game-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-header-icon {
+  font-size: 1.75rem;
+}
+
+.game-header-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.level-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.level-btn {
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: var(--bg-subtle);
+  border: 2px solid transparent;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.level-btn.active {
+  background: var(--accent-primary-soft);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.game-prompt {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 6px 0 16px;
+  padding: 12px 16px;
+  background: var(--bg-subtle);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.game-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  width: 100%;
+}
+
+/* Gentle Completion Overlay */
+.completion-card {
+  text-align: center;
+  padding: 28px 20px;
+  background: var(--bg-subtle);
+  border-radius: 24px;
+  max-width: 420px;
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.completion-emoji {
+  font-size: 3.6rem;
+}
+
+.completion-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.completion-msg {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* 1. Memory Pairs Grid */
+.memory-grid {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.memory-card {
+  aspect-ratio: 1;
+  border-radius: 20px;
+  background: var(--accent-primary-soft);
+  border: 3px solid var(--accent-primary);
+  box-shadow: 0 5px 0 var(--border-soft);
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.memory-card.revealed {
+  background: var(--bg-elevated);
+  border-color: var(--accent-amber);
+}
+
+.memory-card.matched {
+  background: var(--accent-green-soft);
+  border-color: var(--accent-green);
+  opacity: 0.9;
+}
+
+/* 2. Marble Jump Board */
+.marble-board {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  background: var(--bg-board);
+  border-radius: 28px;
+  box-shadow: var(--shadow-inner);
+}
+
+.marble-cell {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 420px) {
+  .marble-cell {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+.marble-cell.hole {
+  background: rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-inner);
+}
+
+.marble-cell.valid-target {
+  background: var(--accent-green-soft);
+  border: 3px dashed var(--accent-green);
+}
+
+.marble-piece {
+  width: 84%;
+  height: 84%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 32%, #8FA8FF, #4E6CE0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.22), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+  transition: transform 0.15s ease;
+}
+
+.marble-cell.selected .marble-piece {
+  background: radial-gradient(circle at 32% 32%, #FFD670, #E0911B);
+  transform: scale(1.12);
+  outline: 3px solid var(--accent-amber);
+}
+
+/* 3. Mental Rotation & Choice Cards */
+.choice-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.choice-card {
+  min-width: 110px;
+  min-height: 110px;
+  padding: 16px;
+  border-radius: 24px;
+  background: var(--bg-subtle);
+  border: 3px solid var(--border-soft);
+  box-shadow: var(--shadow-btn);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  transition: transform 0.12s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.choice-card.correct {
+  background: var(--accent-green-soft);
+  border-color: var(--accent-green);
+}
+
+.choice-card.wrong {
+  background: var(--accent-coral-soft);
+  border-color: var(--accent-coral);
+}
+
+/* 4. Emoji Mahjong */
+.mahjong-board {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  height: 360px;
+  background: var(--bg-board);
+  border-radius: 24px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.mahjong-tile {
+  position: absolute;
+  width: 64px;
+  height: 78px;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  box-shadow: 0 6px 0 var(--border-soft), 0 8px 12px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  transition: transform 0.12s ease, opacity 0.2s ease;
+}
+
+.mahjong-tile.blocked {
+  opacity: 0.48;
+  filter: grayscale(0.25);
+  cursor: not-allowed;
+}
+
+.mahjong-tile.selected {
+  border-color: var(--accent-amber);
+  background: var(--accent-amber-soft);
+  transform: translateY(-4px);
+}
+
+/* 5. Number Match Grid */
+.nummatch-grid {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.nummatch-cell {
+  aspect-ratio: 1;
+  border-radius: 18px;
+  background: var(--bg-subtle);
+  border: 3px solid var(--border-soft);
+  box-shadow: var(--shadow-btn);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  font-weight: 800;
+  gap: 2px;
+}
+
+.nummatch-cell.selected {
+  background: var(--accent-amber-soft);
+  border-color: var(--accent-amber);
+}
+
+.nummatch-cell.hinted {
+  border-color: var(--accent-green);
+  background: var(--accent-green-soft);
+}
+
+.nummatch-cell.cleared {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.dots-helper {
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+/* 6. Target Tap & 7. Whack-a-Mole */
+.mole-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.mole-hole {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bg-board);
+  box-shadow: var(--shadow-inner);
+  border: 4px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+}
+
+.mole-hole.active-mole {
+  background: var(--accent-amber-soft);
+  border-color: var(--accent-amber);
+}
+
+/* 8. Schulte Table */
+.schulte-grid {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.schulte-cell {
+  aspect-ratio: 1;
+  border-radius: 20px;
+  background: var(--bg-subtle);
+  border: 3px solid var(--border-soft);
+  box-shadow: var(--shadow-btn);
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.schulte-cell.found {
+  background: var(--accent-green-soft);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  opacity: 0.65;
+}
+
+/* 9. Sequence Memory Pads */
+.seq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  max-width: 360px;
+  width: 100%;
+}
+
+.seq-pad {
+  aspect-ratio: 1;
+  border-radius: 28px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  font-size: 2.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.72;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.seq-pad.lit {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.7);
+  border-color: var(--text-main);
+}
+
+/* 10. Flags of the World */
+.flags-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  width: 100%;
+  max-width: 560px;
+}
+
+@media (max-width: 480px) {
+  .flags-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flag-card {
+  padding: 16px;
+  border-radius: 22px;
+  background: var(--bg-subtle);
+  border: 3px solid var(--border-soft);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.flag-svg-wrap {
+  width: 100%;
+  max-width: 200px;
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--border-soft);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flag-svg-wrap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.speak-big-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  box-shadow: 0 4px 0 var(--accent-primary-shadow);
+}
+
+/* 11. Color Sudoku */
+.sudoku-grid {
+  display: grid;
+  gap: 6px;
+  background: var(--border-strong);
+  padding: 10px;
+  border-radius: 22px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.sudoku-cell {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  border: 3px solid transparent;
+}
+
+.sudoku-cell.fixed {
+  opacity: 0.92;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.sudoku-cell.selected {
+  border-color: var(--accent-primary);
+  transform: scale(1.04);
+}
+
+.sudoku-cell.conflict {
+  border-color: var(--accent-coral);
+}
+
+.palette-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.palette-swatch {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  border: 3px solid rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-btn);
+}
+
+/* 15. Tower of Hanoi */
+.hanoi-stage {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+  height: 230px;
+  align-items: end;
+  padding: 16px 8px 0;
+}
+
+.hanoi-peg {
+  height: 100%;
+  background: var(--bg-subtle);
+  border: 3px solid var(--border-soft);
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 14px;
+  gap: 4px;
+}
+
+.hanoi-peg.selected {
+  border-color: var(--accent-amber);
+  background: var(--accent-amber-soft);
+}
+
+.hanoi-rod {
+  position: absolute;
+  bottom: 14px;
+  width: 10px;
+  height: 145px;
+  background: var(--border-soft);
+  border-radius: 99px;
+  z-index: 0;
+}
+
+.hanoi-disk {
+  height: 28px;
+  border-radius: 99px;
+  z-index: 1;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* 13. Pattern Train */
+.train-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 16px;
+  background: var(--bg-board);
+  border-radius: 24px;
+  margin-bottom: 16px;
+}
+
+.train-car {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  background: var(--bg-elevated);
+  border: 3px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  position: relative;
+}
+
+.train-car.mystery {
+  border-style: dashed;
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+  font-weight: 800;
+  color: var(--accent-primary);
+}
+
+/* 17. Pattern Copy Dual Grids */
+.copy-dual-wrap {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.pixel-grid {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  background: var(--bg-board);
+  border-radius: 20px;
+}
+
+.pixel-cell {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+}
+
+/* Activity Table */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--bg-subtle);
+  font-weight: 700;
+}
+
+/* Home Intro / Philosophy Section */
+.intro-card {
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  border-radius: 26px;
+  padding: 22px 24px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-card);
+  line-height: 1.6;
+}
+
+.intro-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.intro-text {
+  font-size: 0.96rem;
+  color: var(--text-main);
+  margin: 0 0 10px;
+}
+
+.intro-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.intro-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  border: 1px solid var(--border-soft);
+}
+
+.intro-credits {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-soft);
+}
+
+.intro-credits a {
+  color: var(--accent-primary);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+/* 18. Melody Memory Xylophone Keys */
+.melody-keyboard {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 580px;
+  padding: 20px 10px;
+  background: var(--bg-board);
+  border-radius: 28px;
+  box-shadow: var(--shadow-inner);
+}
+
+.melody-key {
+  flex: 1;
+  min-width: 42px;
+  max-width: 72px;
+  border-radius: 18px;
+  border: 3px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 4px;
+  font-weight: 800;
+  color: #2F2A38;
+  transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+}
+
+.melody-key .note-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.melody-key .note-name {
+  font-size: 0.95rem;
+}
+
+.melody-key.active-note {
+  transform: translateY(4px) scale(1.05);
+  filter: brightness(1.12);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 0 22px rgba(255, 255, 255, 0.85);
+  border-color: var(--text-main);
+}

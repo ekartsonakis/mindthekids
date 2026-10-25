@@ -1,0 +1,5 @@
+# Local Windows server helpers (not needed on Cloudflare Pages)
+serve.ps1
+start-lan-server.bat
+.DS_Store
+Thumbs.db
