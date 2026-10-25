@@ -111,6 +111,15 @@ function renderApp() {
     appEl.innerHTML = `
       <div class="app-shell">
         ${topBarHtml}
+        <section class="intro-card">
+          <h2 class="intro-title">🌱 ${t.intro.title}</h2>
+          <p class="intro-text">${t.intro.p1}</p>
+          <p class="intro-text">${t.intro.p2}</p>
+          <div class="intro-badges">
+            ${t.intro.badges.map((b) => `<span class="intro-badge">${b}</span>`).join('')}
+          </div>
+          <p class="intro-credits">${t.intro.credits}</p>
+        </section>
         <nav class="category-bar">
           ${categories
             .map(
@@ -137,15 +146,6 @@ function renderApp() {
             })
             .join('')}
         </main>
-        <section class="intro-card">
-          <h2 class="intro-title">🌱 ${t.intro.title}</h2>
-          <p class="intro-text">${t.intro.p1}</p>
-          <p class="intro-text">${t.intro.p2}</p>
-          <div class="intro-badges">
-            ${t.intro.badges.map((b) => `<span class="intro-badge">${b}</span>`).join('')}
-          </div>
-          <p class="intro-credits">${t.intro.credits}</p>
-        </section>
         <footer style="text-align:center; font-size:0.8rem; color:var(--text-muted); padding: 8px 0;">
           ${t.offlineReady}
         </footer>

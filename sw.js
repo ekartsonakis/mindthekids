@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mindthekids-cache-v2';
+const CACHE_NAME = 'mindthekids-cache-v3';
 
 const FLAG_CODES = [
   'GR', 'CY', 'IT', 'FR', 'DE', 'JP', 'GB', 'US', 'BR', 'ES', 'CH', 'SE',

@@ -29,6 +29,8 @@ export const TRANSLATIONS = {
         '🌿 Ήρεμο Περιβάλλον Χωρίς Άγχος',
         '✈️ Λειτουργία σε Airplane Mode',
         '🔒 Χωρίς Διαφημίσεις & Ιχνηλάτηση',
+        '📦 Χωρίς Εγκατάσταση από App Stores',
+        '📲 Αποθήκευση ως Εφαρμογή από τον Browser',
       ],
     },
 
@@ -191,6 +193,8 @@ export const TRANSLATIONS = {
         '🌿 Calm & Stress-Free',
         '✈️ Works in Airplane Mode',
         '🔒 No Ads & No Tracking',
+        '📦 No Installation from App Stores',
+        '📲 Save as an App from Your Browser',
       ],
     },
 
