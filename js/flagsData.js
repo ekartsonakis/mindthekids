@@ -1,4 +1,5 @@
 export const FLAGS_DATA = [
+  // ================= TIER 1 (12 Countries — Easy) =================
   {
     code: 'GR',
     en: 'Greece',
@@ -137,6 +138,8 @@ export const FLAGS_DATA = [
       <rect y="4" width="16" height="2" fill="#FECC00"/>
     </svg>`,
   },
+
+  // ================= TIER 2 (12 Countries — Medium, Total 24) =================
   {
     code: 'CA',
     en: 'Canada',
@@ -278,6 +281,293 @@ export const FLAGS_DATA = [
       <rect width="1" height="2" x="0" fill="#169B62"/>
       <rect width="1" height="2" x="1" fill="#FFF"/>
       <rect width="1" height="2" x="2" fill="#FF883E"/>
+    </svg>`,
+  },
+
+  // ================= TIER 3 (12 Countries — Hard, Total 36) =================
+  {
+    code: 'PT',
+    en: 'Portugal',
+    el: 'Πορτογαλία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="12" height="20" x="0" fill="#006600"/>
+      <rect width="18" height="20" x="12" fill="#FF0000"/>
+      <circle cx="12" cy="10" r="4" fill="#FFCC00"/>
+      <rect x="10.2" y="8" width="3.6" height="4" rx="1" fill="#FFF" stroke="#FF0000" stroke-width="0.8"/>
+    </svg>`,
+  },
+  {
+    code: 'NO',
+    en: 'Norway',
+    el: 'Νορβηγία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 22 16">
+      <rect width="22" height="16" fill="#BA0C2F"/>
+      <rect x="6" width="4" height="16" fill="#FFF"/>
+      <rect y="6" width="22" height="4" fill="#FFF"/>
+      <rect x="7" width="2" height="16" fill="#00205B"/>
+      <rect y="7" width="22" height="2" fill="#00205B"/>
+    </svg>`,
+  },
+  {
+    code: 'PL',
+    en: 'Poland',
+    el: 'Πολωνία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 8 5">
+      <rect width="8" height="2.5" y="0" fill="#FFF"/>
+      <rect width="8" height="2.5" y="2.5" fill="#DC143C"/>
+    </svg>`,
+  },
+  {
+    code: 'RO',
+    en: 'Romania',
+    el: 'Ρουμανία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 3 2">
+      <rect width="1" height="2" x="0" fill="#002B7F"/>
+      <rect width="1" height="2" x="1" fill="#FCD116"/>
+      <rect width="1" height="2" x="2" fill="#CE1126"/>
+    </svg>`,
+  },
+  {
+    code: 'BG',
+    en: 'Bulgaria',
+    el: 'Βουλγαρία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 5 3">
+      <rect width="5" height="1" y="0" fill="#FFF"/>
+      <rect width="5" height="1" y="1" fill="#00966E"/>
+      <rect width="5" height="1" y="2" fill="#D62612"/>
+    </svg>`,
+  },
+  {
+    code: 'TR',
+    en: 'Turkey',
+    el: 'Τουρκία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#E30A17"/>
+      <circle cx="11" cy="10" r="5" fill="#FFF"/>
+      <circle cx="12.5" cy="10" r="4" fill="#E30A17"/>
+      <polygon points="17,10 20.5,11.2 18.3,8.2 18.3,11.8 20.5,8.8" fill="#FFF"/>
+    </svg>`,
+  },
+  {
+    code: 'EG',
+    en: 'Egypt',
+    el: 'Αίγυπτος',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="6.66" y="0" fill="#CE1126"/>
+      <rect width="30" height="6.67" y="6.66" fill="#FFF"/>
+      <rect width="30" height="6.67" y="13.33" fill="#000"/>
+      <polygon points="15,7.5 16.5,12 13.5,12" fill="#C09300"/>
+    </svg>`,
+  },
+  {
+    code: 'ZA',
+    en: 'South Africa',
+    el: 'Νότια Αφρική',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="10" y="0" fill="#E03C31"/>
+      <rect width="30" height="10" y="10" fill="#001489"/>
+      <path d="M0,0 L14,10 L0,20 M12,10 H30" fill="none" stroke="#FFF" stroke-width="6"/>
+      <path d="M0,0 L14,10 L0,20 M12,10 H30" fill="none" stroke="#007749" stroke-width="3.8"/>
+      <polygon points="0,3 9,10 0,17" fill="#000" stroke="#FFB81C" stroke-width="1.2"/>
+    </svg>`,
+  },
+  {
+    code: 'MX',
+    en: 'Mexico',
+    el: 'Μεξικό',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="10" height="20" x="0" fill="#006847"/>
+      <rect width="10" height="20" x="10" fill="#FFF"/>
+      <rect width="10" height="20" x="20" fill="#CE1126"/>
+      <circle cx="15" cy="10" r="2.5" fill="#8B5A2B"/>
+    </svg>`,
+  },
+  {
+    code: 'KR',
+    en: 'South Korea',
+    el: 'Νότια Κορέα',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#FFF"/>
+      <circle cx="15" cy="10" r="5" fill="#CD2E3A"/>
+      <path d="M10,10 A5,5 0 0,0 20,10 A2.5,2.5 0 0,0 15,10 A2.5,2.5 0 0,1 10,10 Z" fill="#0047A0"/>
+      <path d="M6,4 L9,7 M21,4 L24,7 M6,16 L9,13 M21,16 L24,13" stroke="#000" stroke-width="1.5"/>
+    </svg>`,
+  },
+  {
+    code: 'IL',
+    en: 'Israel',
+    el: 'Ισραήλ',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#FFF"/>
+      <rect width="30" height="3" y="2" fill="#0038B8"/>
+      <rect width="30" height="3" y="15" fill="#0038B8"/>
+      <polygon points="15,6.2 18.2,11.8 11.8,11.8" fill="none" stroke="#0038B8" stroke-width="1.1"/>
+      <polygon points="15,13.8 18.2,8.2 11.8,8.2" fill="none" stroke="#0038B8" stroke-width="1.1"/>
+    </svg>`,
+  },
+  {
+    code: 'NZ',
+    en: 'New Zealand',
+    el: 'Νέα Ζηλανδία',
+    tier: 3,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#00247D"/>
+      <rect width="14" height="10" fill="#012169"/>
+      <path d="M0,0 L14,10 M14,0 L0,10" stroke="#FFF" stroke-width="2"/>
+      <path d="M7,0 V10 M0,5 H14" stroke="#FFF" stroke-width="3"/>
+      <path d="M7,0 V10 M0,5 H14" stroke="#CC142B" stroke-width="1.6"/>
+      <circle cx="23" cy="5" r="1.2" fill="#CC142B" stroke="#FFF" stroke-width="0.4"/>
+      <circle cx="20" cy="9" r="1.2" fill="#CC142B" stroke="#FFF" stroke-width="0.4"/>
+      <circle cx="26" cy="8" r="1.2" fill="#CC142B" stroke="#FFF" stroke-width="0.4"/>
+      <circle cx="23" cy="15" r="1.3" fill="#CC142B" stroke="#FFF" stroke-width="0.4"/>
+    </svg>`,
+  },
+
+  // ================= TIER 4 (12 Countries — World Explorer, Total 48) =================
+  {
+    code: 'KE',
+    en: 'Kenya',
+    el: 'Κένυα',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="6" y="0" fill="#000"/>
+      <rect width="30" height="8" y="6" fill="#BB0000" stroke="#FFF" stroke-width="1.2"/>
+      <rect width="30" height="6" y="14" fill="#006600"/>
+      <ellipse cx="15" cy="10" rx="2.6" ry="5" fill="#BB0000" stroke="#FFF" stroke-width="0.8"/>
+    </svg>`,
+  },
+  {
+    code: 'NG',
+    en: 'Nigeria',
+    el: 'Νιγηρία',
+    tier: 4,
+    svg: `<svg viewBox="0 0 3 2">
+      <rect width="1" height="2" x="0" fill="#008751"/>
+      <rect width="1" height="2" x="1" fill="#FFF"/>
+      <rect width="1" height="2" x="2" fill="#008751"/>
+    </svg>`,
+  },
+  {
+    code: 'MA',
+    en: 'Morocco',
+    el: 'Μαρόκο',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#C1272D"/>
+      <polygon points="15,6 16.8,12 11.8,8.3 18.2,8.3 13.2,12" fill="none" stroke="#006233" stroke-width="1.1"/>
+    </svg>`,
+  },
+  {
+    code: 'CU',
+    en: 'Cuba',
+    el: 'Κούβα',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#002A8F"/>
+      <rect width="30" height="4" y="4" fill="#FFF"/>
+      <rect width="30" height="4" y="12" fill="#FFF"/>
+      <polygon points="0,0 14,10 0,20" fill="#CF142B"/>
+      <circle cx="5" cy="10" r="2" fill="#FFF"/>
+    </svg>`,
+  },
+  {
+    code: 'JM',
+    en: 'Jamaica',
+    el: 'Τζαμάικα',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#009B3A"/>
+      <polygon points="0,0 15,10 0,20" fill="#000"/>
+      <polygon points="30,0 15,10 30,20" fill="#000"/>
+      <path d="M0,0 L30,20 M30,0 L0,20" stroke="#FED100" stroke-width="3.2"/>
+    </svg>`,
+  },
+  {
+    code: 'CL',
+    en: 'Chile',
+    el: 'Χιλή',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="10" y="0" fill="#FFF"/>
+      <rect width="30" height="10" y="10" fill="#D52B1E"/>
+      <rect width="10" height="10" x="0" y="0" fill="#0039A6"/>
+      <polygon points="5,2.5 5.8,5 8.2,5 6.3,6.4 7,8.8 5,7.3 3,8.8 3.7,6.4 1.8,5 4.2,5" fill="#FFF"/>
+    </svg>`,
+  },
+  {
+    code: 'CO',
+    en: 'Colombia',
+    el: 'Κολομβία',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="10" y="0" fill="#FCD116"/>
+      <rect width="30" height="5" y="10" fill="#003893"/>
+      <rect width="30" height="5" y="15" fill="#CE1126"/>
+    </svg>`,
+  },
+  {
+    code: 'PE',
+    en: 'Peru',
+    el: 'Περού',
+    tier: 4,
+    svg: `<svg viewBox="0 0 3 2">
+      <rect width="1" height="2" x="0" fill="#D91023"/>
+      <rect width="1" height="2" x="1" fill="#FFF"/>
+      <rect width="1" height="2" x="2" fill="#D91023"/>
+    </svg>`,
+  },
+  {
+    code: 'UY',
+    en: 'Uruguay',
+    el: 'Ουρουγουάη',
+    tier: 4,
+    svg: `<svg viewBox="0 0 27 18">
+      <rect width="27" height="18" fill="#FFF"/>
+      <path d="M0,3h27M0,7h27M0,11h27M0,15h27" stroke="#0038A8" stroke-width="2"/>
+      <rect width="10" height="10" fill="#FFF"/>
+      <circle cx="5" cy="5" r="2.6" fill="#FCD116"/>
+    </svg>`,
+  },
+  {
+    code: 'TH',
+    en: 'Thailand',
+    el: 'Ταϊλάνδη',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 18">
+      <rect width="30" height="18" fill="#A51931"/>
+      <rect width="30" height="12" y="3" fill="#F4F5F8"/>
+      <rect width="30" height="6" y="6" fill="#2D2A4A"/>
+    </svg>`,
+  },
+  {
+    code: 'VN',
+    en: 'Vietnam',
+    el: 'Βιετνάμ',
+    tier: 4,
+    svg: `<svg viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#DA251D"/>
+      <polygon points="15,4.5 16.5,9 21.2,9 17.4,11.8 18.8,16.2 15,13.5 11.2,16.2 12.6,11.8 8.8,9 13.5,9" fill="#FFFF00"/>
+    </svg>`,
+  },
+  {
+    code: 'ID',
+    en: 'Indonesia',
+    el: 'Ινδονησία',
+    tier: 4,
+    svg: `<svg viewBox="0 0 3 2">
+      <rect width="3" height="1" y="0" fill="#FF0000"/>
+      <rect width="3" height="1" y="1" fill="#FFF"/>
     </svg>`,
   },
 ];

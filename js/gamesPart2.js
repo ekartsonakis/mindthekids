@@ -1166,3 +1166,252 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
   startMelody();
   return () => clearTimers();
 }
+
+// ============================================================================
+// 19. MAZE EXPLORER (Ο Μικρός Λαβύρινθος — 4 Levels, Tap/Drag/DPad/Keyboard)
+// ============================================================================
+export function renderMazeExplorer(stage, { t, onWin }) {
+  const THEMES = [
+    { hero: '🐰', goal: '🥕' },
+    { hero: '🐝', goal: '🌻' },
+    { hero: '🐶', goal: '🦴' },
+    { hero: '🐸', goal: '🪷' },
+    { hero: '🚀', goal: '🪐' },
+  ];
+
+  let level = 'easy'; // easy (7x7), medium (9x9), hard (11x11), expert (13x13)
+  let round = 0;
+  const totalRounds = 3;
+  let maze = []; // 0 = path, 1 = wall
+  let visited = [];
+  let gridSize = 7;
+  let player = { r: 1, c: 1 };
+  let goal = { r: 5, c: 5 };
+  let theme = THEMES[0];
+  let isDragging = false;
+  let solved = false;
+
+  function generateMaze(rooms) {
+    const sz = rooms * 2 + 1;
+    const grid = Array.from({ length: sz }, () => Array.from({ length: sz }, () => 1));
+
+    function carve(r, c) {
+      grid[r][c] = 0;
+      const dirs = shuffle([
+        [-2, 0],
+        [2, 0],
+        [0, -2],
+        [0, 2],
+      ]);
+      for (const [dr, dc] of dirs) {
+        const nr = r + dr;
+        const nc = c + dc;
+        if (nr > 0 && nr < sz - 1 && nc > 0 && nc < sz - 1 && grid[nr][nc] === 1) {
+          grid[r + dr / 2][c + dc / 2] = 0;
+          carve(nr, nc);
+        }
+      }
+    }
+
+    carve(1, 1);
+    return grid;
+  }
+
+  function initRound() {
+    solved = false;
+    const rooms = level === 'easy' ? 3 : level === 'medium' ? 4 : level === 'hard' ? 5 : 6;
+    gridSize = rooms * 2 + 1;
+    maze = generateMaze(rooms);
+    visited = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => false));
+    player = { r: 1, c: 1 };
+    goal = { r: gridSize - 2, c: gridSize - 2 };
+    visited[1][1] = true;
+    theme = THEMES[(round + rooms) % THEMES.length];
+    draw();
+  }
+
+  function tryStep(dr, dc) {
+    if (solved) return false;
+    const nr = player.r + dr;
+    const nc = player.c + dc;
+    if (nr >= 0 && nr < gridSize && nc >= 0 && nc < gridSize && maze[nr][nc] === 0) {
+      player = { r: nr, c: nc };
+      visited[nr][nc] = true;
+      playTap();
+      draw();
+      checkWin();
+      return true;
+    }
+    return false;
+  }
+
+  function tryMoveToCell(tr, tc) {
+    if (solved) return;
+    if (maze[tr]?.[tc] !== 0) return;
+
+    // Direct neighbor
+    if (Math.abs(tr - player.r) + Math.abs(tc - player.c) === 1) {
+      tryStep(tr - player.r, tc - player.c);
+      return;
+    }
+
+    // Straight line corridor tap (same row or same column with no walls in between)
+    if (tr === player.r && tc !== player.c) {
+      const step = tc > player.c ? 1 : -1;
+      for (let c = player.c + step; c !== tc + step; c += step) {
+        if (maze[player.r][c] === 1) return;
+      }
+      for (let c = player.c + step; c !== tc + step; c += step) {
+        visited[player.r][c] = true;
+      }
+      player = { r: tr, c: tc };
+      playTap();
+      draw();
+      checkWin();
+    } else if (tc === player.c && tr !== player.r) {
+      const step = tr > player.r ? 1 : -1;
+      for (let r = player.r + step; r !== tr + step; r += step) {
+        if (maze[r][player.c] === 1) return;
+      }
+      for (let r = player.r + step; r !== tr + step; r += step) {
+        visited[r][player.c] = true;
+      }
+      player = { r: tr, c: tc };
+      playTap();
+      draw();
+      checkWin();
+    }
+  }
+
+  function checkWin() {
+    if (player.r === goal.r && player.c === goal.c) {
+      solved = true;
+      playSuccess();
+      setTimeout(() => {
+        round++;
+        if (round >= totalRounds) onWin();
+        else initRound();
+      }, 500);
+    }
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'ArrowUp' || e.key === 'w') {
+      e.preventDefault();
+      tryStep(-1, 0);
+    } else if (e.key === 'ArrowDown' || e.key === 's') {
+      e.preventDefault();
+      tryStep(1, 0);
+    } else if (e.key === 'ArrowLeft' || e.key === 'a') {
+      e.preventDefault();
+      tryStep(0, -1);
+    } else if (e.key === 'ArrowRight' || e.key === 'd') {
+      e.preventDefault();
+      tryStep(0, 1);
+    }
+  }
+
+  function draw() {
+    const cellPx = gridSize <= 7 ? 42 : gridSize <= 9 ? 36 : gridSize <= 11 ? 30 : 25;
+    const fontPx = gridSize <= 7 ? '1.45rem' : gridSize <= 9 ? '1.2rem' : gridSize <= 11 ? '1rem' : '0.85rem';
+
+    stage.innerHTML = `
+      <div class="level-selector">
+        <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy}</button>
+        <button class="level-btn ${level === 'medium' ? 'active' : ''}" data-lvl="medium">${t.levels.medium}</button>
+        <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard}</button>
+        <button class="level-btn ${level === 'expert' ? 'active' : ''}" data-lvl="expert">${t.levels.expert}</button>
+      </div>
+      <div class="game-prompt">
+        <span>${t.games.mazeExplorer.prompt}</span>
+        <strong>(${round + 1}/${totalRounds})</strong>
+      </div>
+      <div class="maze-board" id="maze-board" style="grid-template-columns: repeat(${gridSize}, ${cellPx}px);">
+        ${maze
+          .map((row, r) =>
+            row
+              .map((cell, c) => {
+                const isPlayer = player.r === r && player.c === c;
+                const isGoal = goal.r === r && goal.c === c;
+                const isVis = visited[r][c];
+                return `
+                  <div class="maze-cell ${cell === 1 ? 'wall' : 'path'} ${isVis && cell === 0 ? 'visited' : ''} ${
+                  isGoal ? 'goal-cell' : ''
+                }"
+                    data-r="${r}" data-c="${c}"
+                    style="width:${cellPx}px; height:${cellPx}px; font-size:${fontPx};">
+                    ${isPlayer ? theme.hero : isGoal ? theme.goal : isVis && cell === 0 ? '·' : ''}
+                  </div>
+                `;
+              })
+              .join('')
+          )
+          .join('')}
+      </div>
+      <div class="maze-dpad">
+        <div></div>
+        <button class="dpad-btn" data-dir="up">⬆️</button>
+        <div></div>
+        <button class="dpad-btn" data-dir="left">⬅️</button>
+        <button class="dpad-btn" data-dir="down">⬇️</button>
+        <button class="dpad-btn" data-dir="right">➡️</button>
+      </div>
+    `;
+
+    stage.querySelectorAll('.level-btn').forEach((btn) => {
+      btn.onclick = () => {
+        level = btn.dataset.lvl;
+        round = 0;
+        initRound();
+      };
+    });
+
+    stage.querySelectorAll('.maze-cell.path').forEach((el) => {
+      el.onclick = () => {
+        tryMoveToCell(Number(el.dataset.r), Number(el.dataset.c));
+      };
+    });
+
+    const boardEl = stage.querySelector('#maze-board');
+    if (boardEl) {
+      boardEl.onpointerdown = (e) => {
+        isDragging = true;
+        const target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.maze-cell.path');
+        if (target) tryMoveToCell(Number(target.dataset.r), Number(target.dataset.c));
+      };
+      boardEl.onpointermove = (e) => {
+        if (!isDragging) return;
+        const target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.maze-cell.path');
+        if (target) {
+          const r = Number(target.dataset.r);
+          const c = Number(target.dataset.c);
+          if (Math.abs(r - player.r) + Math.abs(c - player.c) === 1) {
+            tryStep(r - player.r, c - player.c);
+          }
+        }
+      };
+      boardEl.onpointerup = () => {
+        isDragging = false;
+      };
+      boardEl.onpointerleave = () => {
+        isDragging = false;
+      };
+    }
+
+    stage.querySelectorAll('.dpad-btn').forEach((btn) => {
+      btn.onclick = () => {
+        const dir = btn.dataset.dir;
+        if (dir === 'up') tryStep(-1, 0);
+        else if (dir === 'down') tryStep(1, 0);
+        else if (dir === 'left') tryStep(0, -1);
+        else if (dir === 'right') tryStep(0, 1);
+      };
+    });
+  }
+
+  window.addEventListener('keydown', handleKeyDown);
+  initRound();
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+}

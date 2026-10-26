@@ -1155,17 +1155,25 @@ export function renderSequenceMemory(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 10. FLAGS OF THE WORLD (Easy 2, Medium 4, Hard 6 + Bundled Offline MP3 Voice!)
+// 10. FLAGS OF THE WORLD (4 Levels by Flag Pool Size, Max 4 Choices + Offline MP3 Voice!)
 // ============================================================================
 export function renderFlagsWorld(stage, { t, lang, onWin }) {
-  let choiceCount = 2; // 2 (easy), 4 (medium), 6 (hard)
+  let level = 'easy'; // 'easy' (12 flags, 2 choices) | 'medium' (24 flags, 4 choices) | 'hard' (36 flags, 4 choices) | 'world' (48 flags, 4 choices)
   let round = 0;
   let currentTarget = null;
   let options = [];
   let locked = false;
+  let usedCodes = new Set();
 
   function getTotalRounds() {
-    return choiceCount === 2 ? 6 : choiceCount === 4 ? 8 : 10;
+    return level === 'easy' ? 6 : level === 'medium' ? 8 : level === 'hard' ? 10 : 12;
+  }
+
+  function getPool() {
+    if (level === 'easy') return FLAGS_DATA.filter((f) => f.tier === 1);
+    if (level === 'medium') return FLAGS_DATA.filter((f) => f.tier <= 2);
+    if (level === 'hard') return FLAGS_DATA.filter((f) => f.tier <= 3);
+    return FLAGS_DATA; // All 48 flags from around the world
   }
 
   function speakCurrent() {
@@ -1176,10 +1184,27 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
 
   function nextQuestion() {
     locked = false;
-    const pool = choiceCount === 2 ? FLAGS_DATA.filter((f) => f.tier === 1) : FLAGS_DATA;
-    const picked = shuffle(pool).slice(0, choiceCount);
-    currentTarget = picked[Math.floor(Math.random() * picked.length)];
-    options = picked.map((f) => ({ ...f, status: '' }));
+    const pool = getPool();
+    const choiceCount = level === 'easy' ? 2 : 4;
+
+    // Pick a target country not yet asked in this session
+    let candidates = pool.filter((f) => !usedCodes.has(f.code));
+    if (level === 'world') {
+      // Prioritize tiers 3 & 4 in World mode so kids see global flags first
+      const globalCandidates = candidates.filter((f) => f.tier >= 3);
+      if (globalCandidates.length > 0) candidates = globalCandidates;
+    }
+    if (candidates.length === 0) {
+      usedCodes.clear();
+      candidates = pool;
+    }
+
+    currentTarget = candidates[Math.floor(Math.random() * candidates.length)];
+    usedCodes.add(currentTarget.code);
+
+    const distractors = shuffle(pool.filter((f) => f.code !== currentTarget.code)).slice(0, choiceCount - 1);
+    options = shuffle([currentTarget, ...distractors]).map((f) => ({ ...f, status: '' }));
+
     draw();
     setTimeout(speakCurrent, 180);
   }
@@ -1189,15 +1214,16 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
     const totalRounds = getTotalRounds();
     stage.innerHTML = `
       <div class="level-selector">
-        <button class="level-btn ${choiceCount === 2 ? 'active' : ''}" data-cnt="2">${t.levels.easy} (2)</button>
-        <button class="level-btn ${choiceCount === 4 ? 'active' : ''}" data-cnt="4">${t.levels.medium} (4)</button>
-        <button class="level-btn ${choiceCount === 6 ? 'active' : ''}" data-cnt="6">${t.levels.hard} (6)</button>
+        <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy} (12)</button>
+        <button class="level-btn ${level === 'medium' ? 'active' : ''}" data-lvl="medium">${t.levels.medium} (24)</button>
+        <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard} (36)</button>
+        <button class="level-btn ${level === 'world' ? 'active' : ''}" data-lvl="world">🌍 ${t.levels.world} (48)</button>
       </div>
       <div class="game-prompt">
         <span>${t.games.flagsWorld.prompt} <strong>${countryName}</strong> (${round + 1}/${totalRounds})</span>
         <button class="speak-big-btn" id="flag-speak-btn">${t.listen}</button>
       </div>
-      <div class="flags-grid" style="${choiceCount === 6 ? 'grid-template-columns: repeat(3, 1fr); max-width: 680px;' : ''}">
+      <div class="flags-grid">
         ${options
           .map(
             (opt, idx) => `
@@ -1212,8 +1238,9 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
 
     stage.querySelectorAll('.level-btn').forEach((btn) => {
       btn.onclick = () => {
-        choiceCount = Number(btn.dataset.cnt);
+        level = btn.dataset.lvl;
         round = 0;
+        usedCodes.clear();
         nextQuestion();
       };
     });

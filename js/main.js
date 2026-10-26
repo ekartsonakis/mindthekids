@@ -29,6 +29,7 @@ import {
   renderShapeSorting,
   renderPatternCopy,
   renderMelodyMemory,
+  renderMazeExplorer,
 } from './gamesPart2.js';
 
 const GAMES_CATALOG = [
@@ -56,6 +57,7 @@ const GAMES_CATALOG = [
   { id: 'towerHanoi', icon: '🌈', bg: 'var(--accent-primary-soft)', category: 'logic', render: renderTowerHanoi },
 
   // Shapes & Space
+  { id: 'mazeExplorer', icon: '🧭', bg: 'var(--accent-amber-soft)', category: 'spatial', render: renderMazeExplorer },
   { id: 'mentalRotation', icon: '🔄', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderMentalRotation },
   { id: 'shapeSorting', icon: '🧺', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderShapeSorting },
   { id: 'patternCopy', icon: '🟦', bg: 'var(--accent-green-soft)', category: 'spatial', render: renderPatternCopy },

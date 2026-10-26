@@ -1,6 +1,6 @@
 # MindTheKids — Παιχνίδια Μυαλού 🌱
 
-**MindTheKids** is a calm, offline-first Progressive Web App (PWA) with **18 cognitive & brain-training games** designed for **preschool children and older**, available in **Greek (`ΕΛ`)** and **English (`EN`)**.
+**MindTheKids** is a calm, offline-first Progressive Web App (PWA) with **19 cognitive & brain-training games** designed for **preschool children and older**, available in **Greek (`ΕΛ`)** and **English (`EN`)**.
 
 ---
 
@@ -14,13 +14,13 @@
 
 ---
 
-## 🧩 The 18 Brain Games
+## 🧩 The 19 Brain Games
 
 ### 🧠 Memory & Music (Μνήμη & Μουσική)
 1. **Memory Pairs (Ζευγάρια Μνήμης)** — Match pairs of cards (`6`, `12`, `16`, or `20` cards).
 2. **Sequence Memory (Μνήμη Ακολουθίας)** — Watch and repeat growing color sequences (`4`, `6`, or `8` steps).
 3. **Melody Memory (Μουσική Ακολουθία)** — Listen to discreet, gentle music-box notes (`Do, Re, Mi, Fa, Sol, La`) and build real children's melodies (*Twinkle Twinkle Little Star / Φεγγαράκι μου λαμπρό*, *Lightly Row / Χαρωπά τα δυο μου χέρια*, *Ode to Joy / Ωδή στη Χαρά*) note by note (`5`, `8`, or `14+` notes).
-4. **Flags of the World (Σημαίες του Κόσμου)** — Listen to the spoken country name in Greek or English and match the SVG flag (`2`, `4`, or `6` flags at once).
+4. **Flags of the World (Σημαίες του Κόσμου)** — Listen to the spoken country name in Greek or English and match the SVG flag across 4 world pool levels (`12`, `24`, `36`, or all `48` world flags from all continents, with at most 4 choices per question).
 
 ### 👀 Attention (Προσοχή & Παρατήρηση)
 5. **Target Tap (Βρες τον Στόχο)** — Find and tap all target items among distractors (`4×3`, `4×4`, or `5×5` grids).
@@ -40,9 +40,10 @@
 15. **Rainbow Rings Tower (Πύργος των Κρίκων / Tower of Hanoi)** — Move `3`, `4`, or `5` rainbow rings to the target peg.
 
 ### 📐 Shapes & Space (Σχήματα & Χώρος)
-16. **Shape Rotation (Περιστροφή Σχημάτων)** — Identify which asymmetric 2D shape matches the target when rotated (`90°/180°/270°` or diagonal `45°` increments).
-17. **Shadows & Sorting (Σκιές & Ταξινόμηση)** — Match objects to their silhouettes (`3` or `6` shadows) or sort items into category baskets.
-18. **Copy the Pattern (Αντίγραψε το Σχέδιο)** — Reproduce pixel patterns on `3×3`, `4×4`, and `5×5` grids.
+16. **Little Maze (Ο Μικρός Λαβύρινθος)** — Navigate randomized mazes across 4 difficulty levels (`7×7`, `9×9`, `11×11`, `13×13`) via touch/drag, corridor tap, on-screen D-pad, or keyboard arrows.
+17. **Shape Rotation (Περιστροφή Σχημάτων)** — Identify which asymmetric 2D shape matches the target when rotated (`90°/180°/270°` or diagonal `45°` increments).
+18. **Shadows & Sorting (Σκιές & Ταξινόμηση)** — Match objects to their silhouettes (`3` or `6` shadows) or sort items into category baskets.
+19. **Copy the Pattern (Αντίγραψε το Σχέδιο)** — Reproduce pixel patterns on `3×3`, `4×4`, and `5×5` grids.
 
 ---
 

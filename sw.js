@@ -1,8 +1,10 @@
-const CACHE_NAME = 'mindthekids-cache-v3';
+const CACHE_NAME = 'mindthekids-cache-v4';
 
 const FLAG_CODES = [
   'GR', 'CY', 'IT', 'FR', 'DE', 'JP', 'GB', 'US', 'BR', 'ES', 'CH', 'SE',
   'CA', 'UA', 'FI', 'DK', 'NL', 'BE', 'AR', 'CN', 'IN', 'AU', 'AT', 'IE',
+  'PT', 'NO', 'PL', 'RO', 'BG', 'TR', 'EG', 'ZA', 'KE', 'NG', 'MA', 'MX',
+  'CU', 'JM', 'CL', 'CO', 'PE', 'UY', 'KR', 'TH', 'VN', 'ID', 'IL', 'NZ',
 ];
 
 const PRECACHE_ASSETS = [
