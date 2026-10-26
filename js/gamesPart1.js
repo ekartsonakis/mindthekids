@@ -1179,7 +1179,7 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
   function speakCurrent() {
     if (!currentTarget) return;
     const countryName = lang === 'el' ? currentTarget.el : currentTarget.en;
-    speakFlagPrompt(currentTarget.code, `${t.games.flagsWorld.voicePrefix}${countryName}`, lang);
+    speakFlagPrompt(currentTarget.code, countryName, lang);
   }
 
   function nextQuestion() {

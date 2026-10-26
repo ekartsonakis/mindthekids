@@ -7,7 +7,7 @@ import {
   recordGameCompletion,
   clearActivityLog,
 } from './storage.js';
-import { playTap, playComplete, stopSpokenAudio } from './audio.js';
+import { playTap, playComplete, stopSpokenAudio, speakGameHelp } from './audio.js';
 import {
   renderMemoryPairs,
   renderMarbleJump,
@@ -205,7 +205,10 @@ function renderApp() {
               <span class="game-header-icon">${gameObj.icon}</span>
               <h2 class="game-header-title">${gt.title}</h2>
             </div>
-            <button class="pill-btn exit-btn" id="btn-exit-inner">${t.exit}</button>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <button class="pill-btn help-audio-btn" id="btn-game-help">${t.helpAudioBtn}</button>
+              <button class="pill-btn exit-btn" id="btn-exit-inner">${t.exit}</button>
+            </div>
           </div>
           <div class="game-stage" id="game-stage"></div>
         </main>
@@ -284,6 +287,17 @@ function bindHeaderEvents() {
     exitInnerBtn.onclick = () => {
       playTap();
       goHome();
+    };
+  }
+
+  const helpBtn = document.getElementById('btn-game-help');
+  if (helpBtn && activeGameId) {
+    helpBtn.onclick = () => {
+      const t = TRANSLATIONS[st.lang] || TRANSLATIONS.el;
+      const gt = t.games[activeGameId] || {};
+      const fallbackText =
+        gt.prompt || gt.watchPrompt || gt.promptSame || gt.promptCount || gt.promptShadows || gt.title || '';
+      speakGameHelp(activeGameId, fallbackText, st.lang);
     };
   }
 

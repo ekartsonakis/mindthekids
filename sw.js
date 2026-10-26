@@ -1,10 +1,18 @@
-const CACHE_NAME = 'mindthekids-cache-v5';
+const CACHE_NAME = 'mindthekids-cache-v6';
 
 const FLAG_CODES = [
   'GR', 'CY', 'IT', 'FR', 'DE', 'JP', 'GB', 'US', 'BR', 'ES', 'CH', 'SE',
   'CA', 'UA', 'FI', 'DK', 'NL', 'BE', 'AR', 'CN', 'IN', 'AU', 'AT', 'IE',
   'PT', 'NO', 'PL', 'RO', 'BG', 'TR', 'EG', 'ZA', 'KE', 'NG', 'MA', 'MX',
   'CU', 'JM', 'CL', 'CO', 'PE', 'UY', 'KR', 'TH', 'VN', 'ID', 'IL', 'NZ',
+];
+
+const GAME_IDS = [
+  'memoryPairs', 'sequenceMemory', 'melodyMemory', 'flagsWorld',
+  'targetTap', 'whackAMole', 'schulteTable', 'emojiMahjong',
+  'numberMatch', 'visualMath', 'colorSudoku', 'marbleJump',
+  'patternTrain', 'oddOneOut', 'towerHanoi', 'mazeExplorer',
+  'mentalRotation', 'shapeSorting', 'patternCopy',
 ];
 
 const PRECACHE_ASSETS = [
@@ -22,6 +30,8 @@ const PRECACHE_ASSETS = [
   '/js/gamesPart2.js',
   ...FLAG_CODES.map((c) => `/audio/el/${c}.mp3`),
   ...FLAG_CODES.map((c) => `/audio/en/${c}.mp3`),
+  ...GAME_IDS.map((id) => `/audio/help-el/${id}.mp3`),
+  ...GAME_IDS.map((id) => `/audio/help-en/${id}.mp3`),
 ];
 
 self.addEventListener('install', (event) => {

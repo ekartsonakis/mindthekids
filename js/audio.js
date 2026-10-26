@@ -121,9 +121,37 @@ export function stopSpokenAudio() {
 }
 
 /**
- * Speaks the country flag prompt using pre-bundled offline MP3 files (/audio/{lang}/{code}.mp3)
- * so that Greek & English sound natural on ALL browsers (Opera, Chrome, Edge, Firefox, Android, iOS)
- * even when Windows lacks a Greek SAPI TTS voice, and 100% offline in Airplane mode.
+ * Speaks the on-demand game instructions when the child taps the "❓🔊" help button.
+ * Uses pre-bundled offline MP3 files (/audio/help-{lang}/{gameId}.mp3).
+ */
+export function speakGameHelp(gameId, fallbackText, lang = 'el') {
+  if (getState().muted) return;
+  stopSpokenAudio();
+
+  const safeLang = lang === 'en' ? 'en' : 'el';
+  if (gameId) {
+    try {
+      const audio = new Audio(`/audio/help-${safeLang}/${gameId}.mp3`);
+      audio.volume = 0.9;
+      currentAudioEl = audio;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          fallbackWebSpeech(fallbackText, safeLang);
+        });
+      }
+      return;
+    } catch {
+      // Fall through to Web Speech API
+    }
+  }
+
+  fallbackWebSpeech(fallbackText, safeLang);
+}
+
+/**
+ * Speaks ONLY the country name for Flags of the World using pre-bundled offline MP3 files
+ * (/audio/{lang}/{code}.mp3) so Greek & English sound natural on ALL browsers and offline.
  */
 export function speakFlagPrompt(code, fallbackText, lang = 'el') {
   if (getState().muted) return;
