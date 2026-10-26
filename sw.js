@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mindthekids-cache-v4';
+const CACHE_NAME = 'mindthekids-cache-v5';
 
 const FLAG_CODES = [
   'GR', 'CY', 'IT', 'FR', 'DE', 'JP', 'GB', 'US', 'BR', 'ES', 'CH', 'SE',
@@ -26,7 +26,15 @@ const PRECACHE_ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_ASSETS))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        PRECACHE_ASSETS.map((url) =>
+          fetch(url, { cache: 'reload' }).then((res) => {
+            if (res.ok) return cache.put(url, res);
+          })
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
