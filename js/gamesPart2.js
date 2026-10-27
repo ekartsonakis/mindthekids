@@ -104,11 +104,13 @@ export function renderColorSudoku(stage, { t, onWin }) {
   let size = 3; // 3, 4, or 6
   let grid = [];
   let fixed = [];
+  let currentSolution = [];
   let selectedCell = null;
 
   function initBoard() {
     const list = size === 3 ? templates3 : size === 4 ? templates4 : templates6;
     const tpl = list[Math.floor(Math.random() * list.length)];
+    currentSolution = tpl.solution.map((row) => [...row]);
     grid = tpl.solution.map((row, r) => row.map((v, c) => (tpl.mask[r][c] ? v : 0)));
     fixed = tpl.mask.map((row) => [...row]);
     selectedCell = null;
@@ -217,6 +219,9 @@ export function renderColorSudoku(stage, { t, onWin }) {
           )
           .join('')}
       </div>
+      <div class="choice-row">
+        <button class="pill-btn" id="sudoku-hint">${t.hint}</button>
+      </div>
     `;
 
     stage.querySelectorAll('.level-btn').forEach((btn) => {
@@ -240,6 +245,29 @@ export function renderColorSudoku(stage, { t, onWin }) {
     stage.querySelectorAll('.palette-swatch').forEach((btn) => {
       btn.onclick = () => handleSwatchTap(Number(btn.dataset.val));
     });
+
+    const hintBtn = stage.querySelector('#sudoku-hint');
+    if (hintBtn) {
+      hintBtn.onclick = () => {
+        let target = selectedCell;
+        if (!target || fixed[target.r][target.c] || grid[target.r][target.c] === currentSolution[target.r][target.c]) {
+          target = null;
+          for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+              if (!fixed[r][c] && grid[r][c] !== currentSolution[r][c]) {
+                target = { r, c };
+                break;
+              }
+            }
+            if (target) break;
+          }
+        }
+        if (target) {
+          selectedCell = target;
+          handleSwatchTap(currentSolution[target.r][target.c]);
+        }
+      };
+    }
   }
 
   initBoard();

@@ -110,42 +110,19 @@ export function renderMemoryPairs(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 2. MARBLE JUMP (3, 5, 9, 15 Marbles)
+// 2. MARBLE JUMP (100% Solvable by Reverse-Jump Generation + Live DFS Solver)
 // ============================================================================
 export function renderMarbleJump(stage, { t, onWin }) {
-  // 0: invalid, 1: marble, 2: empty hole
-  const presets = {
-    easy: [
-      [0, 0, 2, 0, 0],
-      [0, 0, 1, 0, 0],
-      [0, 2, 1, 1, 0],
-      [0, 0, 2, 0, 0],
-      [0, 0, 0, 0, 0],
-    ],
-    medium: [
-      [0, 2, 2, 2, 0],
-      [2, 2, 1, 2, 2],
-      [2, 1, 1, 1, 2],
-      [2, 2, 1, 2, 2],
-      [0, 2, 2, 2, 0],
-    ],
-    hard: [
-      [0, 2, 1, 1, 0],
-      [2, 1, 1, 1, 2],
-      [1, 1, 2, 1, 1],
-      [0, 2, 1, 2, 0],
-      [0, 0, 2, 0, 0],
-    ],
-    expert: [
-      [0, 1, 1, 1, 0],
-      [1, 1, 1, 1, 1],
-      [1, 1, 2, 1, 1],
-      [0, 1, 1, 1, 0],
-      [0, 2, 1, 2, 0],
-    ],
-  };
+  // 0: invalid corner, 1: marble, 2: empty hole
+  const BASE_MASK = [
+    [0, 2, 2, 2, 0],
+    [2, 2, 2, 2, 2],
+    [2, 2, 2, 2, 2],
+    [2, 2, 2, 2, 2],
+    [0, 2, 2, 2, 0],
+  ];
 
-  let level = 'easy';
+  let level = 'easy'; // easy: 3 marbles, medium: 5, hard: 7, expert: 10
   let board = [];
   let history = [];
   let selected = null;
@@ -154,15 +131,61 @@ export function renderMarbleJump(stage, { t, onWin }) {
     return b.map((row) => [...row]);
   }
 
-  function initBoard() {
-    board = cloneBoard(presets[level]);
-    history = [];
-    selected = null;
-    draw();
+  /**
+   * Generates a 100% solvable board by starting with 1 marble at (2,2)
+   * and executing (targetMarbles - 1) valid reverse jumps.
+   */
+  function generateSolvableBoard(targetMarbles) {
+    for (let attempt = 0; attempt < 40; attempt++) {
+      const b = cloneBoard(BASE_MASK);
+      b[2][2] = 1; // Start from 1 final marble in the center
+      let currentMarbles = 1;
+      const dirs = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1],
+      ];
+
+      while (currentMarbles < targetMarbles) {
+        const revMoves = [];
+        for (let r = 0; r < 5; r++) {
+          for (let c = 0; c < 5; c++) {
+            if (b[r][c] !== 1) continue;
+            for (const [dr, dc] of dirs) {
+              const mr = r + dr;
+              const mc = c + dc;
+              const fr = r + dr * 2;
+              const fc = c + dc * 2;
+              if (b[mr]?.[mc] === 2 && b[fr]?.[fc] === 2) {
+                revMoves.push({ r, c, mr, mc, fr, fc });
+              }
+            }
+          }
+        }
+        if (revMoves.length === 0) break;
+        const pick = revMoves[Math.floor(Math.random() * revMoves.length)];
+        // Undo jump: marble at (r,c) came from (fr,fc) jumping over (mr,mc)
+        b[pick.r][pick.c] = 2;
+        b[pick.mr][pick.mc] = 1;
+        b[pick.fr][pick.fc] = 1;
+        currentMarbles++;
+      }
+
+      if (currentMarbles === targetMarbles) {
+        return b;
+      }
+    }
+    // Fallback guaranteed 3-marble line
+    const fb = cloneBoard(BASE_MASK);
+    fb[2][1] = 1;
+    fb[2][2] = 1;
+    fb[1][2] = 1;
+    return fb;
   }
 
-  function getValidJumps(r, c) {
-    if (!board[r] || board[r][c] !== 1) return [];
+  function getValidJumpsForBoard(b, r, c) {
+    if (!b[r] || b[r][c] !== 1) return [];
     const dirs = [
       [-1, 0],
       [1, 0],
@@ -175,21 +198,72 @@ export function renderMarbleJump(stage, { t, onWin }) {
       const mc = c + dc;
       const tr = r + dr * 2;
       const tc = c + dc * 2;
-      if (board[mr]?.[mc] === 1 && board[tr]?.[tc] === 2) {
-        jumps.push({ mr, mc, tr, tc });
+      if (b[mr]?.[mc] === 1 && b[tr]?.[tc] === 2) {
+        jumps.push({ sr: r, sc: c, mr, mc, tr, tc });
       }
     }
     return jumps;
   }
 
-  function countMarbles() {
+  function countMarblesOn(b) {
     let count = 0;
-    for (const row of board) {
+    for (const row of b) {
       for (const cell of row) {
         if (cell === 1) count++;
       }
     }
     return count;
+  }
+
+  /**
+   * DFS Solver: returns a jump { sr, sc, mr, mc, tr, tc } that leads to 1 marble, or null.
+   */
+  function findWinningMove(b) {
+    const visited = new Set();
+
+    function serialize(grid) {
+      return grid.map((r) => r.join('')).join('');
+    }
+
+    function solve(grid, remaining) {
+      if (remaining === 1) return true;
+      const key = serialize(grid);
+      if (visited.has(key)) return false;
+      visited.add(key);
+
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          if (grid[r][c] !== 1) continue;
+          const jumps = getValidJumpsForBoard(grid, r, c);
+          for (const j of jumps) {
+            grid[r][c] = 2;
+            grid[j.mr][j.mc] = 2;
+            grid[j.tr][j.tc] = 1;
+            if (solve(grid, remaining - 1)) {
+              grid[r][c] = 1;
+              grid[j.mr][j.mc] = 1;
+              grid[j.tr][j.tc] = 2;
+              return j;
+            }
+            grid[r][c] = 1;
+            grid[j.mr][j.mc] = 1;
+            grid[j.tr][j.tc] = 2;
+          }
+        }
+      }
+      return null;
+    }
+
+    const res = solve(cloneBoard(b), countMarblesOn(b));
+    return typeof res === 'object' ? res : null;
+  }
+
+  function initBoard() {
+    const count = level === 'easy' ? 3 : level === 'medium' ? 5 : level === 'hard' ? 7 : 10;
+    board = generateSolvableBoard(count);
+    history = [];
+    selected = null;
+    draw();
   }
 
   function handleCellTap(r, c) {
@@ -201,7 +275,7 @@ export function renderMarbleJump(stage, { t, onWin }) {
       return;
     }
     if (val === 2 && selected) {
-      const jumps = getValidJumps(selected.r, selected.c);
+      const jumps = getValidJumpsForBoard(board, selected.r, selected.c);
       const jump = jumps.find((j) => j.tr === r && j.tc === c);
       if (jump) {
         history.push(cloneBoard(board));
@@ -211,7 +285,7 @@ export function renderMarbleJump(stage, { t, onWin }) {
         selected = { r, c };
         playSuccess();
         draw();
-        if (countMarbles() === 1) {
+        if (countMarblesOn(board) === 1) {
           setTimeout(onWin, 400);
         }
       } else {
@@ -220,14 +294,27 @@ export function renderMarbleJump(stage, { t, onWin }) {
     }
   }
 
+  function handleHint() {
+    playTap();
+    // If current state is a dead end because of a previous wrong move, undo back to a solvable state
+    while (!findWinningMove(board) && history.length > 0) {
+      board = history.pop();
+    }
+    const winMove = findWinningMove(board);
+    if (winMove) {
+      selected = { r: winMove.sr, c: winMove.sc };
+      draw();
+    }
+  }
+
   function draw() {
-    const validTargets = selected ? getValidJumps(selected.r, selected.c) : [];
+    const validTargets = selected ? getValidJumpsForBoard(board, selected.r, selected.c) : [];
     stage.innerHTML = `
       <div class="level-selector">
         <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy} (3)</button>
         <button class="level-btn ${level === 'medium' ? 'active' : ''}" data-lvl="medium">${t.levels.medium} (5)</button>
-        <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard} (9)</button>
-        <button class="level-btn ${level === 'expert' ? 'active' : ''}" data-lvl="expert">${t.levels.expert} (15)</button>
+        <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard} (7)</button>
+        <button class="level-btn ${level === 'expert' ? 'active' : ''}" data-lvl="expert">${t.levels.expert} (10)</button>
       </div>
       <div class="game-prompt">${t.games.marbleJump.prompt}</div>
       <div class="marble-board" style="grid-template-columns: repeat(5, 1fr);">
@@ -249,6 +336,7 @@ export function renderMarbleJump(stage, { t, onWin }) {
           .join('')}
       </div>
       <div class="choice-row" style="margin-top: 16px;">
+        <button class="pill-btn" id="mj-hint">${t.hint}</button>
         <button class="pill-btn" id="mj-undo" ${history.length === 0 ? 'disabled style="opacity:0.5"' : ''}>${t.undo}</button>
         <button class="pill-btn" id="mj-reset">${t.reset}</button>
       </div>
@@ -263,6 +351,7 @@ export function renderMarbleJump(stage, { t, onWin }) {
     stage.querySelectorAll('.marble-cell.hole').forEach((btn) => {
       btn.onclick = () => handleCellTap(Number(btn.dataset.r), Number(btn.dataset.c));
     });
+    stage.querySelector('#mj-hint').onclick = handleHint;
     const undoBtn = stage.querySelector('#mj-undo');
     if (undoBtn) {
       undoBtn.onclick = () => {
@@ -466,6 +555,58 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
   let level = 'easy';
   let tiles = [];
   let selectedId = null;
+  let hintIds = [];
+
+  function isTileFreeInList(tile, activeTiles) {
+    if (tile.removed) return false;
+    const others = activeTiles.filter((other) => !other.removed && other.id !== tile.id);
+    const covered = others.some(
+      (o) => o.z > tile.z && Math.abs(o.c - tile.c) < 0.85 && Math.abs(o.r - tile.r) < 0.85
+    );
+    if (covered) return false;
+    const leftBlocked = others.some(
+      (o) => o.z === tile.z && Math.abs(o.r - tile.r) < 0.6 && Math.abs(o.c - (tile.c - 1)) < 0.2
+    );
+    const rightBlocked = others.some(
+      (o) => o.z === tile.z && Math.abs(o.r - tile.r) < 0.6 && Math.abs(o.c - (tile.c + 1)) < 0.2
+    );
+    return !(leftBlocked && rightBlocked);
+  }
+
+  function isTileFree(tile) {
+    return isTileFreeInList(tile, tiles);
+  }
+
+  function findFreeMatchingPair() {
+    const freeTiles = tiles.filter((tile) => !tile.removed && isTileFree(tile));
+    for (let i = 0; i < freeTiles.length; i++) {
+      for (let j = i + 1; j < freeTiles.length; j++) {
+        if (freeTiles[i].icon === freeTiles[j].icon) {
+          return [freeTiles[i].id, freeTiles[j].id];
+        }
+      }
+    }
+    return null;
+  }
+
+  // Ensures that at least one playable free pair always exists among remaining tiles
+  function ensureFreePairExists() {
+    const remaining = tiles.filter((tile) => !tile.removed);
+    if (remaining.length < 2) return;
+    if (findFreeMatchingPair()) return;
+
+    const freeTiles = remaining.filter((tile) => isTileFree(tile));
+    if (freeTiles.length >= 2) {
+      const firstFree = freeTiles[0];
+      const secondFree = freeTiles[1];
+      const partner = remaining.find((tile) => tile.id !== firstFree.id && tile.icon === firstFree.icon);
+      if (partner && partner.id !== secondFree.id) {
+        const tmp = secondFree.icon;
+        secondFree.icon = partner.icon;
+        partner.icon = tmp;
+      }
+    }
+  }
 
   function buildLayout() {
     const layouts = {
@@ -494,32 +635,29 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
     const coords = layouts[level] || layouts.easy;
     const pairCount = Math.floor(coords.length / 2);
     const picked = shuffle(icons).slice(0, pairCount);
-    const pool = shuffle([...picked, ...picked]);
 
-    tiles = coords.slice(0, pairCount * 2).map((pos, id) => ({
+    // Construct board by peeling free pairs so a valid solution path is 100% guaranteed
+    const simTiles = coords.slice(0, pairCount * 2).map((pos, id) => ({
       id,
       ...pos,
-      icon: pool[id],
+      icon: null,
       removed: false,
     }));
-    selectedId = null;
-    draw();
-  }
 
-  function isTileFree(tile) {
-    if (tile.removed) return false;
-    const active = tiles.filter((other) => !other.removed && other.id !== tile.id);
-    const covered = active.some(
-      (o) => o.z > tile.z && Math.abs(o.c - tile.c) < 0.85 && Math.abs(o.r - tile.r) < 0.85
-    );
-    if (covered) return false;
-    const leftBlocked = active.some(
-      (o) => o.z === tile.z && Math.abs(o.r - tile.r) < 0.6 && Math.abs(o.c - (tile.c - 1)) < 0.2
-    );
-    const rightBlocked = active.some(
-      (o) => o.z === tile.z && Math.abs(o.r - tile.r) < 0.6 && Math.abs(o.c - (tile.c + 1)) < 0.2
-    );
-    return !(leftBlocked && rightBlocked);
+    for (let p = 0; p < pairCount; p++) {
+      const freeNow = shuffle(simTiles.filter((tile) => !tile.removed && isTileFreeInList(tile, simTiles)));
+      const [a, b] = freeNow.length >= 2 ? freeNow : simTiles.filter((tile) => !tile.removed);
+      a.icon = picked[p];
+      b.icon = picked[p];
+      a.removed = true;
+      b.removed = true;
+    }
+
+    tiles = simTiles.map((tile) => ({ ...tile, removed: false }));
+    ensureFreePairExists();
+    selectedId = null;
+    hintIds = [];
+    draw();
   }
 
   function handleTileTap(tile) {
@@ -527,6 +665,7 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
       playGentleWrong();
       return;
     }
+    hintIds = [];
     playTap();
     if (selectedId === tile.id) {
       selectedId = null;
@@ -543,6 +682,7 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
       prev.removed = true;
       tile.removed = true;
       selectedId = null;
+      ensureFreePairExists();
       playSuccess();
       draw();
       if (tiles.every((x) => x.removed)) {
@@ -569,10 +709,13 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
           .sort((a, b) => a.z - b.z)
           .map((tile) => {
             const free = isTileFree(tile);
+            const isHinted = hintIds.includes(tile.id);
             const leftPx = 30 + tile.c * 72 - tile.z * 6;
             const topPx = 32 + tile.r * 86 - tile.z * 8;
             return `
-              <button class="mahjong-tile ${free ? '' : 'blocked'} ${selectedId === tile.id ? 'selected' : ''}"
+              <button class="mahjong-tile ${free ? '' : 'blocked'} ${
+                selectedId === tile.id || isHinted ? 'selected' : ''
+              }"
                 data-id="${tile.id}"
                 style="left: ${leftPx}px; top: ${topPx}px; z-index: ${tile.z * 10 + Math.round(tile.r)};">
                 ${tile.icon}
@@ -580,6 +723,9 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
             `;
           })
           .join('')}
+      </div>
+      <div class="choice-row">
+        <button class="pill-btn" id="em-hint">${t.hint}</button>
       </div>
     `;
 
@@ -595,6 +741,19 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
         if (tile) handleTileTap(tile);
       };
     });
+    const hintBtn = stage.querySelector('#em-hint');
+    if (hintBtn) {
+      hintBtn.onclick = () => {
+        ensureFreePairExists();
+        const pair = findFreeMatchingPair();
+        if (pair) {
+          hintIds = pair;
+          selectedId = pair[0];
+          playTap();
+          draw();
+        }
+      };
+    }
   }
 
   buildLayout();
@@ -614,9 +773,9 @@ export function renderNumberMatch(stage, { t, onWin }) {
       mode === 'same'
         ? [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]
         : mode === 'make5'
-        ? [1, 4, 2, 3, 1, 4, 2, 3, 5, 5, 2, 2]
+        ? [1, 4, 2, 3, 1, 4, 2, 3, 5, 5, 2, 3]
         : mode === 'make10'
-        ? [1, 9, 2, 8, 3, 7, 4, 6, 5, 5, 3, 3]
+        ? [1, 9, 2, 8, 3, 7, 4, 6, 5, 5, 3, 7]
         : [1, 9, 2, 8, 3, 7, 4, 6, 5, 5, 6, 4, 7, 3, 8, 2, 9, 1, 5, 5];
     cells = shuffle(base).map((val, idx) => ({ idx, val, cleared: false }));
     selectedIdx = null;
@@ -666,7 +825,7 @@ export function renderNumberMatch(stage, { t, onWin }) {
     return false;
   }
 
-  function findAnyValidPair() {
+  function findNeighborPair() {
     for (let i = 0; i < cells.length; i++) {
       if (cells[i].cleared) continue;
       for (let j = i + 1; j < cells.length; j++) {
@@ -676,6 +835,12 @@ export function renderNumberMatch(stage, { t, onWin }) {
         }
       }
     }
+    return null;
+  }
+
+  function findAnyValidPair() {
+    const neighborPair = findNeighborPair();
+    if (neighborPair) return neighborPair;
     for (let i = 0; i < cells.length; i++) {
       if (cells[i].cleared) continue;
       for (let j = i + 1; j < cells.length; j++) {
@@ -702,11 +867,9 @@ export function renderNumberMatch(stage, { t, onWin }) {
     }
     const a = cells[selectedIdx];
     const b = cells[idx];
-    const validPair = findAnyValidPair();
-    const canPair =
-      isMatch(a.val, b.val) &&
-      (areNeighbors(selectedIdx, idx) ||
-        (validPair && validPair[0] === Math.min(selectedIdx, idx) && validPair[1] === Math.max(selectedIdx, idx)));
+    const hasNeighborsAvailable = findNeighborPair() !== null;
+    // Allow matching if cells are neighbors/line-connected, OR if no neighbor pairs exist on the board
+    const canPair = isMatch(a.val, b.val) && (areNeighbors(selectedIdx, idx) || !hasNeighborsAvailable);
 
     if (canPair) {
       a.cleared = true;
