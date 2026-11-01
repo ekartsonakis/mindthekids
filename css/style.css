@@ -425,7 +425,7 @@ button {
 /* 1. Memory Pairs Grid */
 .memory-grid {
   display: grid;
-  gap: 12px;
+  gap: clamp(6px, 2vw, 12px);
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
@@ -433,11 +433,12 @@ button {
 
 .memory-card {
   aspect-ratio: 1;
-  border-radius: 20px;
+  min-width: 0;
+  border-radius: clamp(12px, 3.2vw, 20px);
   background: var(--accent-primary-soft);
   border: 3px solid var(--accent-primary);
-  box-shadow: 0 5px 0 var(--border-soft);
-  font-size: 2.5rem;
+  box-shadow: 0 4px 0 var(--border-soft);
+  font-size: clamp(1.35rem, 6vw, 2.5rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -458,27 +459,26 @@ button {
 /* 2. Marble Jump Board */
 .marble-board {
   display: grid;
-  gap: 10px;
-  padding: 18px;
+  gap: clamp(6px, 2vw, 10px);
+  padding: clamp(10px, 3vw, 18px);
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1;
   background: var(--bg-board);
   border-radius: 28px;
   box-shadow: var(--shadow-inner);
+  margin: 0 auto;
 }
 
 .marble-cell {
-  width: 52px;
-  height: 52px;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media (max-width: 420px) {
-  .marble-cell {
-    width: 42px;
-    height: 42px;
-  }
 }
 
 .marble-cell.hole {
@@ -509,17 +509,18 @@ button {
 /* 3. Mental Rotation & Choice Cards */
 .choice-row {
   display: flex;
-  gap: 16px;
+  gap: clamp(8px, 2.5vw, 16px);
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 14px;
+  width: 100%;
 }
 
 .choice-card {
-  min-width: 110px;
-  min-height: 110px;
-  padding: 16px;
-  border-radius: 24px;
+  min-width: clamp(76px, 21vw, 110px);
+  min-height: clamp(76px, 21vw, 110px);
+  padding: clamp(10px, 2.8vw, 16px);
+  border-radius: clamp(16px, 4vw, 24px);
   background: var(--bg-subtle);
   border: 3px solid var(--border-soft);
   box-shadow: var(--shadow-btn);
@@ -527,10 +528,29 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 2.2rem;
+  gap: 6px;
+  font-size: clamp(1.6rem, 5.5vw, 2.2rem);
   font-weight: 800;
   transition: transform 0.12s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.rot-target-card {
+  width: clamp(108px, 30vw, 145px);
+  height: clamp(108px, 30vw, 145px);
+}
+
+.rot-opt {
+  width: clamp(82px, 22vw, 120px);
+  height: clamp(82px, 22vw, 120px);
+  min-width: 0;
+  min-height: 0;
+  padding: 8px;
+}
+
+.rot-svg {
+  width: 82%;
+  height: 82%;
+  display: block;
 }
 
 .choice-card.correct {
@@ -547,8 +567,10 @@ button {
 .mahjong-board {
   position: relative;
   width: 100%;
-  max-width: 540px;
-  height: 360px;
+  max-width: 520px;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  min-height: 220px;
   background: var(--bg-board);
   border-radius: 24px;
   margin: 0 auto;
@@ -557,16 +579,15 @@ button {
 
 .mahjong-tile {
   position: absolute;
-  width: 64px;
-  height: 78px;
-  border-radius: 14px;
+  border-radius: clamp(10px, 2.5vw, 14px);
   background: var(--bg-elevated);
   border: 2px solid var(--border-soft);
-  box-shadow: 0 6px 0 var(--border-soft), 0 8px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 0 var(--border-soft), 0 6px 10px rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: clamp(1.25rem, 5.2vw, 2rem);
+  padding: 0;
   transition: transform 0.12s ease, opacity 0.2s ease;
 }
 
@@ -585,14 +606,16 @@ button {
 /* 5. Number Match Grid */
 .nummatch-grid {
   display: grid;
-  gap: 10px;
+  gap: clamp(6px, 2vw, 10px);
   width: 100%;
   max-width: 440px;
+  margin: 0 auto;
 }
 
 .nummatch-cell {
   aspect-ratio: 1;
-  border-radius: 18px;
+  min-width: 0;
+  border-radius: clamp(12px, 3vw, 18px);
   background: var(--bg-subtle);
   border: 3px solid var(--border-soft);
   box-shadow: var(--shadow-btn);
@@ -600,9 +623,10 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1.55rem;
+  font-size: clamp(1.15rem, 4.8vw, 1.55rem);
   font-weight: 800;
   gap: 2px;
+  padding: 2px;
 }
 
 .nummatch-cell.selected {
@@ -621,23 +645,27 @@ button {
 }
 
 .dots-helper {
-  font-size: 0.65rem;
+  font-size: clamp(0.45rem, 1.8vw, 0.65rem);
   letter-spacing: 1px;
   color: var(--accent-primary);
   line-height: 1;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* 6. Target Tap & 7. Whack-a-Mole */
 .mole-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  max-width: 420px;
+  gap: clamp(10px, 3vw, 18px);
+  max-width: 380px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .mole-hole {
   aspect-ratio: 1;
+  min-width: 0;
   border-radius: 50%;
   background: var(--bg-board);
   box-shadow: var(--shadow-inner);
@@ -645,7 +673,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: clamp(2rem, 8vw, 3rem);
   position: relative;
 }
 
@@ -655,24 +683,85 @@ button {
 }
 
 /* 8. Schulte Table */
+.schulte-stats-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.schulte-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  border: 2px solid var(--border-soft);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.schulte-stat-pill strong {
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
+}
+
+.schulte-stat-pill.best-pill strong {
+  color: var(--accent-amber);
+}
+
+.schulte-record-banner {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.schulte-record-banner.new-record {
+  background: var(--accent-amber-soft);
+  border-color: var(--accent-amber);
+}
+
+.schulte-record-banner .record-headline {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--text-main);
+}
+
+.schulte-record-banner .record-details {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
 .schulte-grid {
   display: grid;
-  gap: 12px;
+  gap: clamp(6px, 2vw, 12px);
   width: 100%;
   max-width: 420px;
+  margin: 0 auto;
 }
 
 .schulte-cell {
   aspect-ratio: 1;
-  border-radius: 20px;
+  min-width: 0;
+  border-radius: clamp(12px, 3vw, 20px);
   background: var(--bg-subtle);
   border: 3px solid var(--border-soft);
   box-shadow: var(--shadow-btn);
-  font-size: 2rem;
+  font-size: clamp(1.25rem, 5vw, 1.9rem);
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 }
 
 .schulte-cell.found {
@@ -686,17 +775,19 @@ button {
 .seq-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-  max-width: 360px;
+  gap: clamp(12px, 3vw, 18px);
+  max-width: 340px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .seq-pad {
   aspect-ratio: 1;
+  min-width: 0;
   border-radius: 28px;
   border: 4px solid rgba(0, 0, 0, 0.1);
   box-shadow: var(--shadow-card);
-  font-size: 2.6rem;
+  font-size: clamp(2rem, 7vw, 2.6rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -715,34 +806,31 @@ button {
 .flags-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  gap: clamp(10px, 2.8vw, 18px);
   width: 100%;
   max-width: 560px;
-}
-
-@media (max-width: 480px) {
-  .flags-grid {
-    grid-template-columns: 1fr;
-  }
+  margin: 0 auto;
 }
 
 .flag-card {
-  padding: 16px;
-  border-radius: 22px;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(10px, 2.5vw, 16px);
+  border-radius: 20px;
   background: var(--bg-subtle);
   border: 3px solid var(--border-soft);
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .flag-svg-wrap {
   width: 100%;
   max-width: 200px;
   aspect-ratio: 3 / 2;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   border: 2px solid var(--border-soft);
   background: #fff;
@@ -760,12 +848,12 @@ button {
 .speak-big-btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 22px;
+  gap: 8px;
+  padding: 10px 18px;
   border-radius: 999px;
   background: var(--accent-primary);
   color: #fff;
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 800;
   box-shadow: 0 4px 0 var(--accent-primary-shadow);
 }
@@ -773,23 +861,26 @@ button {
 /* 11. Color Sudoku */
 .sudoku-grid {
   display: grid;
-  gap: 6px;
+  gap: clamp(4px, 1.4vw, 6px);
   background: var(--border-strong);
-  padding: 10px;
+  padding: clamp(6px, 2vw, 10px);
   border-radius: 22px;
   max-width: 400px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .sudoku-cell {
   aspect-ratio: 1;
-  border-radius: 12px;
+  min-width: 0;
+  border-radius: clamp(8px, 2vw, 12px);
   background: var(--bg-elevated);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.7rem;
+  font-size: clamp(1.05rem, 4.5vw, 1.7rem);
   border: 3px solid transparent;
+  padding: 0;
 }
 
 .sudoku-cell.fixed {
@@ -808,20 +899,20 @@ button {
 
 .palette-bar {
   display: flex;
-  gap: 10px;
-  margin-top: 18px;
+  gap: clamp(6px, 2vw, 10px);
+  margin-top: 14px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .palette-swatch {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: clamp(44px, 12vw, 56px);
+  height: clamp(44px, 12vw, 56px);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: clamp(1.25rem, 4.5vw, 1.6rem);
   border: 3px solid rgba(0, 0, 0, 0.15);
   box-shadow: var(--shadow-btn);
 }
@@ -830,16 +921,18 @@ button {
 .hanoi-stage {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: clamp(8px, 2.5vw, 12px);
   width: 100%;
   max-width: 560px;
-  height: 230px;
+  height: clamp(185px, 45vw, 230px);
   align-items: end;
-  padding: 16px 8px 0;
+  padding: 12px 4px 0;
+  margin: 0 auto;
 }
 
 .hanoi-peg {
   height: 100%;
+  min-width: 0;
   background: var(--bg-subtle);
   border: 3px solid var(--border-soft);
   border-radius: 20px;
@@ -860,15 +953,15 @@ button {
 .hanoi-rod {
   position: absolute;
   bottom: 14px;
-  width: 10px;
-  height: 145px;
+  width: 8px;
+  height: 70%;
   background: var(--border-soft);
   border-radius: 99px;
   z-index: 0;
 }
 
 .hanoi-disk {
-  height: 28px;
+  height: clamp(22px, 5.5vw, 28px);
   border-radius: 99px;
   z-index: 1;
   border: 2px solid rgba(0, 0, 0, 0.15);
@@ -879,25 +972,26 @@ button {
 .train-track {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 1.8vw, 8px);
   flex-wrap: wrap;
   justify-content: center;
-  padding: 16px;
+  padding: clamp(10px, 3vw, 16px);
   background: var(--bg-board);
   border-radius: 24px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  width: 100%;
 }
 
 .train-car {
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
+  width: clamp(44px, 12vw, 66px);
+  height: clamp(44px, 12vw, 66px);
+  border-radius: clamp(12px, 3vw, 18px);
   background: var(--bg-elevated);
   border: 3px solid var(--border-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: clamp(1.35rem, 5vw, 2rem);
   position: relative;
 }
 
@@ -912,26 +1006,42 @@ button {
 /* 17. Pattern Copy Dual Grids */
 .copy-dual-wrap {
   display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
+  gap: clamp(8px, 3vw, 24px);
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.copy-arrow {
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .pixel-grid {
+  flex: 1;
+  max-width: 225px;
+  aspect-ratio: 1;
   display: grid;
-  gap: 6px;
-  padding: 12px;
+  gap: clamp(4px, 1.2vw, 6px);
+  padding: clamp(8px, 2.2vw, 12px);
   background: var(--bg-board);
   border-radius: 20px;
 }
 
 .pixel-cell {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
+  border-radius: clamp(6px, 1.8vw, 12px);
   background: var(--bg-elevated);
   border: 2px solid var(--border-soft);
+  padding: 0;
 }
 
 /* Activity Table */
@@ -1017,41 +1127,42 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 10px;
+  gap: clamp(5px, 1.8vw, 10px);
   width: 100%;
   max-width: 580px;
-  padding: 20px 10px;
+  padding: clamp(12px, 3vw, 20px) clamp(6px, 2vw, 10px);
   background: var(--bg-board);
   border-radius: 28px;
   box-shadow: var(--shadow-inner);
+  margin: 0 auto;
 }
 
 .melody-key {
   flex: 1;
-  min-width: 42px;
+  min-width: 0;
   max-width: 72px;
-  border-radius: 18px;
+  border-radius: clamp(12px, 3vw, 18px);
   border: 3px solid rgba(0, 0, 0, 0.14);
   box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 4px;
+  padding: 12px 2px;
   font-weight: 800;
   color: #2F2A38;
   transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
 }
 
 .melody-key .note-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.7);
 }
 
 .melody-key .note-name {
-  font-size: 0.95rem;
+  font-size: clamp(0.78rem, 2.8vw, 0.95rem);
 }
 
 .melody-key.active-note {
@@ -1065,7 +1176,10 @@ button {
 .maze-board {
   display: grid;
   gap: 2px;
-  padding: 10px;
+  padding: clamp(6px, 2vw, 10px);
+  width: 100%;
+  max-width: min(100%, 390px);
+  aspect-ratio: 1;
   background: var(--border-strong);
   border-radius: 22px;
   box-shadow: var(--shadow-card);
@@ -1074,12 +1188,17 @@ button {
 }
 
 .maze-cell {
+  width: 100%;
+  height: 100%;
   aspect-ratio: 1;
-  border-radius: 6px;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.35rem;
+  line-height: 1;
   transition: background-color 0.12s ease;
 }
 
@@ -1111,10 +1230,10 @@ button {
 
 .maze-dpad {
   display: grid;
-  grid-template-columns: repeat(3, 58px);
-  grid-template-rows: repeat(2, 52px);
+  grid-template-columns: repeat(3, clamp(48px, 14vw, 58px));
+  grid-template-rows: repeat(2, clamp(42px, 12vw, 52px));
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 12px;
   justify-content: center;
 }
 
@@ -1123,7 +1242,7 @@ button {
   background: var(--bg-subtle);
   border: 2px solid var(--border-soft);
   box-shadow: var(--shadow-btn);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1140,4 +1259,85 @@ button {
   color: var(--accent-primary);
   padding: 9px 15px;
   font-size: 0.96rem;
+}
+
+/* Mobile Portrait Auto-Scale & Compact Layout */
+@media (max-width: 540px) {
+  .app-shell {
+    padding: env(safe-area-inset-top, 8px) 10px env(safe-area-inset-bottom, 16px);
+  }
+
+  .top-bar {
+    padding: 8px 2px;
+    margin-bottom: 4px;
+    gap: 6px;
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand-title {
+    font-size: 1.15rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .pill-btn {
+    padding: 7px 11px;
+    font-size: 0.85rem;
+    border-radius: 14px;
+  }
+
+  .pill-btn.exit-btn,
+  .pill-btn.help-audio-btn {
+    padding: 7px 12px;
+    font-size: 0.88rem;
+  }
+
+  .game-view {
+    padding: 12px 10px;
+    border-radius: 22px;
+    margin-bottom: 10px;
+  }
+
+  .game-header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+
+  .game-header-icon {
+    font-size: 1.4rem;
+  }
+
+  .game-header-title {
+    font-size: 1.05rem;
+  }
+
+  .level-selector {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .level-btn {
+    padding: 6px 11px;
+    font-size: 0.82rem;
+    border-radius: 12px;
+  }
+
+  .game-prompt {
+    font-size: 1rem;
+    margin: 4px 0 10px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+
+  .game-stage {
+    min-height: 240px;
+  }
 }

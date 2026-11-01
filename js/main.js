@@ -92,9 +92,9 @@ function renderApp() {
       </div>
       <div class="top-controls">
         ${
-          activeScreen !== 'home'
-            ? `<button class="pill-btn exit-btn" id="btn-exit">${t.exit}</button>`
-            : `<button class="pill-btn" id="btn-activity">${t.activity}</button>`
+          activeScreen === 'home'
+            ? `<button class="pill-btn" id="btn-activity">${t.activity}</button>`
+            : ''
         }
         <button class="pill-btn" id="btn-lang">${st.lang === 'el' ? '🇬🇧 EN' : '🇬🇷 ΕΛ'}</button>
         <button class="pill-btn" id="btn-mute" title="Sound">${st.muted ? '🔇' : '🔊'}</button>
@@ -169,7 +169,10 @@ function renderApp() {
               <span class="game-header-icon">📊</span>
               <h2 class="game-header-title">${t.activity}</h2>
             </div>
-            <button class="pill-btn" id="btn-clear-act">${t.clearActivity}</button>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <button class="pill-btn" id="btn-clear-act">${t.clearActivity}</button>
+              <button class="pill-btn exit-btn" id="btn-exit-inner">${t.exit}</button>
+            </div>
           </div>
           <div class="game-stage">
             ${
@@ -221,15 +224,20 @@ function renderApp() {
       const cleanup = gameObj.render(stageEl, {
         t,
         lang: st.lang,
-        onWin: () => {
+        onWin: (customInfo = {}) => {
           stopCurrentGame();
           recordGameCompletion(gameObj.id);
           playComplete();
+          const winEmoji = customInfo.emoji || '🌟';
+          const winTitle = customInfo.title || t.wellDone;
+          const winMsg = customInfo.msg || t.completedMsg;
+          const extraHtml = customInfo.extraHtml || '';
           stageEl.innerHTML = `
             <div class="completion-card">
-              <div class="completion-emoji">🌟</div>
-              <h3 class="completion-title">${t.wellDone}</h3>
-              <p class="completion-msg">${t.completedMsg}</p>
+              <div class="completion-emoji">${winEmoji}</div>
+              <h3 class="completion-title">${winTitle}</h3>
+              <p class="completion-msg">${winMsg}</p>
+              ${extraHtml}
               <div class="completion-actions">
                 <button class="pill-btn green-btn" id="btn-replay">${t.playAgain}</button>
                 <button class="pill-btn exit-btn" id="btn-done-exit">${t.exit}</button>
@@ -269,14 +277,6 @@ function bindHeaderEvents() {
   const homeBrand = document.getElementById('nav-home');
   if (homeBrand) {
     homeBrand.onclick = () => {
-      playTap();
-      goHome();
-    };
-  }
-
-  const exitBtn = document.getElementById('btn-exit');
-  if (exitBtn) {
-    exitBtn.onclick = () => {
       playTap();
       goHome();
     };

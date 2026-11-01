@@ -938,7 +938,6 @@ export function renderPatternCopy(stage, { t, onWin }) {
     const list = presets[level];
     const target = list[round];
     const sz = target.length;
-    const cellPx = sz === 5 ? 40 : sz === 4 ? 46 : 52;
 
     stage.innerHTML = `
       <div class="level-selector">
@@ -954,7 +953,7 @@ export function renderPatternCopy(stage, { t, onWin }) {
               row
                 .map(
                   (cell) => `
-              <div class="pixel-cell" style="width:${cellPx}px; height:${cellPx}px; ${
+              <div class="pixel-cell" style="${
                     cell ? 'background: var(--accent-primary); border-color: var(--accent-primary-shadow);' : ''
                   }"></div>
             `
@@ -963,7 +962,7 @@ export function renderPatternCopy(stage, { t, onWin }) {
             )
             .join('')}
         </div>
-        <div style="font-size: 2rem; font-weight: 800; color: var(--text-muted);">➔</div>
+        <div class="copy-arrow">➔</div>
         <div class="pixel-grid" style="grid-template-columns: repeat(${sz}, 1fr);">
           ${userGrid
             .map((row, r) =>
@@ -971,7 +970,7 @@ export function renderPatternCopy(stage, { t, onWin }) {
                 .map(
                   (cell, c) => `
               <button class="pixel-cell copy-cell" data-r="${r}" data-c="${c}"
-                style="width:${cellPx}px; height:${cellPx}px; ${
+                style="${
                     cell ? 'background: var(--accent-green); border-color: var(--accent-green-shadow);' : ''
                   }"></button>
             `
@@ -1340,8 +1339,7 @@ export function renderMazeExplorer(stage, { t, onWin }) {
   }
 
   function draw() {
-    const cellPx = gridSize <= 7 ? 42 : gridSize <= 9 ? 36 : gridSize <= 11 ? 30 : 25;
-    const fontPx = gridSize <= 7 ? '1.45rem' : gridSize <= 9 ? '1.2rem' : gridSize <= 11 ? '1rem' : '0.85rem';
+    const fontPx = gridSize <= 7 ? 'clamp(1rem, 4.5vw, 1.45rem)' : gridSize <= 9 ? 'clamp(0.85rem, 3.8vw, 1.2rem)' : gridSize <= 11 ? 'clamp(0.75rem, 3.1vw, 1rem)' : 'clamp(0.65rem, 2.6vw, 0.85rem)';
 
     stage.innerHTML = `
       <div class="level-selector">
@@ -1354,7 +1352,7 @@ export function renderMazeExplorer(stage, { t, onWin }) {
         <span>${t.games.mazeExplorer.prompt}</span>
         <strong>(${round + 1}/${totalRounds})</strong>
       </div>
-      <div class="maze-board" id="maze-board" style="grid-template-columns: repeat(${gridSize}, ${cellPx}px);">
+      <div class="maze-board" id="maze-board" style="grid-template-columns: repeat(${gridSize}, 1fr);">
         ${maze
           .map((row, r) =>
             row
@@ -1367,7 +1365,7 @@ export function renderMazeExplorer(stage, { t, onWin }) {
                   isGoal ? 'goal-cell' : ''
                 }"
                     data-r="${r}" data-c="${c}"
-                    style="width:${cellPx}px; height:${cellPx}px; font-size:${fontPx};">
+                    style="font-size:${fontPx};">
                     ${isPlayer ? theme.hero : isGoal ? theme.goal : isVis && cell === 0 ? '·' : ''}
                   </div>
                 `;

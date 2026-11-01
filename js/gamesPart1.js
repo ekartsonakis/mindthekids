@@ -1,5 +1,6 @@
 import { playTap, playSuccess, playGentleWrong, speakFlagPrompt, stopSpokenAudio } from './audio.js';
 import { FLAGS_DATA } from './flagsData.js';
+import { getSchulteBest, recordSchulteTime } from './storage.js';
 
 function shuffle(arr) {
   const a = [...arr];
@@ -491,15 +492,15 @@ export function renderMentalRotation(stage, { t, onWin }) {
         <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard}</button>
       </div>
       <div class="game-prompt">${t.games.mentalRotation.prompt} (${round + 1}/${totalRounds})</div>
-      <div class="choice-card" style="width: 145px; height: 145px; background: var(--bg-elevated);">
-        <svg viewBox="0 0 100 100" width="110" height="110">${current.shape.svg}</svg>
+      <div class="choice-card rot-target-card" style="background: var(--bg-elevated);">
+        <svg viewBox="0 0 100 100" class="rot-svg">${current.shape.svg}</svg>
       </div>
       <div class="choice-row">
         ${current.options
           .map(
             (opt, idx) => `
-          <button class="choice-card rot-opt" data-idx="${idx}" style="width: 120px; height: 120px;">
-            <svg viewBox="0 0 100 100" width="90" height="90" style="transform: rotate(${opt.angle}deg); transition: transform 0.45s ease;">
+          <button class="choice-card rot-opt" data-idx="${idx}">
+            <svg viewBox="0 0 100 100" class="rot-svg" style="transform: rotate(${opt.angle}deg); transition: transform 0.45s ease;">
               ${opt.svg}
             </svg>
           </button>
@@ -696,6 +697,19 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
   }
 
   function draw() {
+    const allC = tiles.map((x) => x.c);
+    const allR = tiles.map((x) => x.r);
+    const minC = Math.min(...allC);
+    const maxC = Math.max(...allC);
+    const minR = Math.min(...allR);
+    const maxR = Math.max(...allR);
+    const colsCount = maxC - minC + 1;
+    const rowsCount = Math.max(maxR - minR + 1, 2.4);
+    const colStep = 90 / colsCount;
+    const rowStep = 86 / rowsCount;
+    const tileW = (colStep * 0.88).toFixed(2);
+    const tileH = (rowStep * 0.86).toFixed(2);
+
     stage.innerHTML = `
       <div class="level-selector">
         <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy} (10)</button>
@@ -710,14 +724,14 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
           .map((tile) => {
             const free = isTileFree(tile);
             const isHinted = hintIds.includes(tile.id);
-            const leftPx = 30 + tile.c * 72 - tile.z * 6;
-            const topPx = 32 + tile.r * 86 - tile.z * 8;
+            const leftPct = (5 + (tile.c - minC + 0.06) * colStep - tile.z * 1.3).toFixed(2);
+            const topPct = (7 + (tile.r - minR + 0.07) * rowStep - tile.z * 1.7).toFixed(2);
             return `
               <button class="mahjong-tile ${free ? '' : 'blocked'} ${
                 selectedId === tile.id || isHinted ? 'selected' : ''
               }"
                 data-id="${tile.id}"
-                style="left: ${leftPx}px; top: ${topPx}px; z-index: ${tile.z * 10 + Math.round(tile.r)};">
+                style="left: ${leftPct}%; top: ${topPct}%; width: ${tileW}%; height: ${tileH}%; z-index: ${tile.z * 10 + Math.round(tile.r)};">
                 ${tile.icon}
               </button>
             `;
@@ -1124,22 +1138,49 @@ export function renderWhackAMole(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 8. SCHULTE TABLES (2x2, 3x3, 4x4, 5x5)
+// 8. SCHULTE TABLES (2x2, 3x3, 4x4, 5x5 + Live Timer & Personal Best Record)
 // ============================================================================
 export function renderSchulteTable(stage, { t, onWin }) {
   let size = 3; // 2, 3, 4, 5
   let numbers = [];
   let nextNum = 1;
+  let startTime = 0;
+  let elapsedSec = 0;
+  let timerInterval = null;
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function startTimer() {
+    stopTimer();
+    startTime = Date.now();
+    elapsedSec = 0;
+    timerInterval = setInterval(() => {
+      elapsedSec = (Date.now() - startTime) / 1000;
+      const el = stage.querySelector('#schulte-timer-val');
+      if (el) {
+        el.textContent = `${elapsedSec.toFixed(1)}s`;
+      }
+    }, 100);
+  }
 
   function initGrid() {
     const total = size * size;
     numbers = shuffle(Array.from({ length: total }, (_, i) => i + 1));
     nextNum = 1;
+    startTimer();
     draw();
   }
 
   function draw() {
     const total = size * size;
+    const best = getSchulteBest(size);
+    const stText = t.games.schulteTable;
+
     stage.innerHTML = `
       <div class="level-selector">
         <button class="level-btn ${size === 2 ? 'active' : ''}" data-sz="2">2×2 (1–4)</button>
@@ -1147,15 +1188,25 @@ export function renderSchulteTable(stage, { t, onWin }) {
         <button class="level-btn ${size === 4 ? 'active' : ''}" data-sz="4">4×4 (1–16)</button>
         <button class="level-btn ${size === 5 ? 'active' : ''}" data-sz="5">5×5 (1–25)</button>
       </div>
+      <div class="schulte-stats-bar">
+        <div class="schulte-stat-pill">
+          <span>${stText.timeLabel}:</span>
+          <strong id="schulte-timer-val">${elapsedSec.toFixed(1)}s</strong>
+        </div>
+        <div class="schulte-stat-pill best-pill">
+          <span>${stText.bestLabel} (${size}×${size}):</span>
+          <strong>${best !== null ? `${best.toFixed(1)}s` : '—'}</strong>
+        </div>
+      </div>
       <div class="game-prompt">
-        <span>${t.games.schulteTable.prompt}</span>
+        <span>${stText.prompt}</span>
         <strong style="font-size: 1.6rem; color: var(--accent-primary);">${nextNum <= total ? nextNum : '✓'}</strong>
       </div>
       <div class="schulte-grid" style="grid-template-columns: repeat(${size}, 1fr); max-width: ${size === 5 ? '480px' : '420px'};">
         ${numbers
           .map(
             (n) => `
-          <button class="schulte-cell ${n < nextNum ? 'found' : ''}" data-n="${n}" style="font-size: ${size === 5 ? '1.45rem' : '1.9rem'};">
+          <button class="schulte-cell ${n < nextNum ? 'found' : ''}" data-n="${n}">
             ${n}
           </button>
         `
@@ -1179,7 +1230,44 @@ export function renderSchulteTable(stage, { t, onWin }) {
           playSuccess();
           draw();
           if (nextNum > total) {
-            setTimeout(onWin, 350);
+            stopTimer();
+            const finalSec = Number(((Date.now() - startTime) / 1000).toFixed(1));
+            const rec = recordSchulteTime(size, finalSec);
+            setTimeout(() => {
+              let recordBanner = '';
+              if (rec.beatenPrevious) {
+                recordBanner = `
+                  <div class="schulte-record-banner new-record">
+                    <div class="record-headline">${stText.newRecordMsg}</div>
+                    <div class="record-details">
+                      ${stText.yourTimeMsg} <strong>${finalSec.toFixed(1)}s</strong>
+                      <span>(${stText.prevBestMsg} ${rec.prevBest.toFixed(1)}s)</span>
+                    </div>
+                  </div>
+                `;
+              } else if (rec.isNewRecord) {
+                recordBanner = `
+                  <div class="schulte-record-banner new-record">
+                    <div class="record-headline">${stText.firstRecordMsg}</div>
+                    <div class="record-details">
+                      ${stText.yourTimeMsg} <strong>${finalSec.toFixed(1)}s</strong>
+                    </div>
+                  </div>
+                `;
+              } else {
+                recordBanner = `
+                  <div class="schulte-record-banner">
+                    <div class="record-details">
+                      ${stText.yourTimeMsg} <strong>${finalSec.toFixed(1)}s</strong> · ${stText.bestLabel}: <strong>${rec.prevBest.toFixed(1)}s</strong>
+                    </div>
+                  </div>
+                `;
+              }
+              onWin({
+                emoji: rec.beatenPrevious ? '🏆' : '🌟',
+                extraHtml: recordBanner,
+              });
+            }, 350);
           }
         } else if (n > nextNum) {
           playGentleWrong();
@@ -1189,6 +1277,7 @@ export function renderSchulteTable(stage, { t, onWin }) {
   }
 
   initGrid();
+  return () => stopTimer();
 }
 
 // ============================================================================

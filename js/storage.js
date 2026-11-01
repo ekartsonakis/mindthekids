@@ -5,6 +5,7 @@ const defaultState = {
   theme: 'light',
   muted: false,
   activity: {}, // { [gameId]: { completed: number, lastPlayed: string } }
+  schulteBest: {}, // { [size]: number (seconds) }
 };
 
 let state = loadState();
@@ -12,16 +13,17 @@ let state = loadState();
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...defaultState, activity: {} };
+    if (!raw) return { ...defaultState, activity: {}, schulteBest: {} };
     const parsed = JSON.parse(raw);
     return {
       lang: parsed.lang === 'en' ? 'en' : 'el',
       theme: parsed.theme === 'dark' ? 'dark' : 'light',
       muted: Boolean(parsed.muted),
       activity: parsed.activity && typeof parsed.activity === 'object' ? parsed.activity : {},
+      schulteBest: parsed.schulteBest && typeof parsed.schulteBest === 'object' ? parsed.schulteBest : {},
     };
   } catch {
-    return { ...defaultState, activity: {} };
+    return { ...defaultState, activity: {}, schulteBest: {} };
   }
 }
 
@@ -70,5 +72,25 @@ export function recordGameCompletion(gameId) {
 
 export function clearActivityLog() {
   state.activity = {};
+  state.schulteBest = {};
   saveState();
+}
+
+export function getSchulteBest(size) {
+  if (!state.schulteBest) state.schulteBest = {};
+  const val = state.schulteBest[String(size)];
+  return typeof val === 'number' ? val : null;
+}
+
+export function recordSchulteTime(size, seconds) {
+  if (!state.schulteBest) state.schulteBest = {};
+  const key = String(size);
+  const prevBest = typeof state.schulteBest[key] === 'number' ? state.schulteBest[key] : null;
+  const isNewRecord = prevBest === null || seconds < prevBest;
+  const beatenPrevious = prevBest !== null && seconds < prevBest;
+  if (isNewRecord) {
+    state.schulteBest[key] = seconds;
+    saveState();
+  }
+  return { seconds, prevBest, isNewRecord, beatenPrevious };
 }
