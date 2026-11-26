@@ -34,33 +34,33 @@ import {
 
 const GAMES_CATALOG = [
   // Memory & Music
-  { id: 'memoryPairs', icon: '🃏', bg: 'var(--accent-primary-soft)', category: 'memory', render: renderMemoryPairs },
-  { id: 'sequenceMemory', icon: '🎶', bg: 'var(--accent-purple-soft)', category: 'memory', render: renderSequenceMemory },
-  { id: 'melodyMemory', icon: '🎹', bg: 'var(--accent-amber-soft)', category: 'memory', render: renderMelodyMemory },
-  { id: 'flagsWorld', icon: '🏳️', bg: 'var(--accent-teal-soft)', category: 'memory', render: renderFlagsWorld },
+  { id: 'memoryPairs', icon: '🃏', theme: 'indigo', bg: 'var(--accent-primary-soft)', category: 'memory', render: renderMemoryPairs },
+  { id: 'sequenceMemory', icon: '🎶', theme: 'purple', bg: 'var(--accent-purple-soft)', category: 'memory', render: renderSequenceMemory },
+  { id: 'melodyMemory', icon: '🎹', theme: 'amber', bg: 'var(--accent-amber-soft)', category: 'memory', render: renderMelodyMemory },
+  { id: 'flagsWorld', icon: '🏳️', theme: 'teal', bg: 'var(--accent-teal-soft)', category: 'memory', render: renderFlagsWorld },
 
   // Attention
-  { id: 'targetTap', icon: '🐞', bg: 'var(--accent-coral-soft)', category: 'attention', render: renderTargetTap },
-  { id: 'whackAMole', icon: '🐹', bg: 'var(--accent-amber-soft)', category: 'attention', render: renderWhackAMole },
-  { id: 'schulteTable', icon: '🔢', bg: 'var(--accent-green-soft)', category: 'attention', render: renderSchulteTable },
-  { id: 'emojiMahjong', icon: '🀄', bg: 'var(--accent-amber-soft)', category: 'attention', render: renderEmojiMahjong },
+  { id: 'targetTap', icon: '🐞', theme: 'coral', bg: 'var(--accent-coral-soft)', category: 'attention', render: renderTargetTap },
+  { id: 'whackAMole', icon: '🐹', theme: 'amber', bg: 'var(--accent-amber-soft)', category: 'attention', render: renderWhackAMole },
+  { id: 'schulteTable', icon: '🔢', theme: 'green', bg: 'var(--accent-green-soft)', category: 'attention', render: renderSchulteTable },
+  { id: 'emojiMahjong', icon: '🀄', theme: 'amber', bg: 'var(--accent-amber-soft)', category: 'attention', render: renderEmojiMahjong },
 
   // Math & Numbers
-  { id: 'numberMatch', icon: '🎲', bg: 'var(--accent-primary-soft)', category: 'math', render: renderNumberMatch },
-  { id: 'visualMath', icon: '🍎', bg: 'var(--accent-coral-soft)', category: 'math', render: renderVisualMath },
+  { id: 'numberMatch', icon: '🎲', theme: 'indigo', bg: 'var(--accent-primary-soft)', category: 'math', render: renderNumberMatch },
+  { id: 'visualMath', icon: '🍎', theme: 'coral', bg: 'var(--accent-coral-soft)', category: 'math', render: renderVisualMath },
 
   // Logic & Sudoku
-  { id: 'colorSudoku', icon: '🎨', bg: 'var(--accent-green-soft)', category: 'logic', render: renderColorSudoku },
-  { id: 'marbleJump', icon: '🔮', bg: 'var(--accent-purple-soft)', category: 'logic', render: renderMarbleJump },
-  { id: 'patternTrain', icon: '🚂', bg: 'var(--accent-amber-soft)', category: 'logic', render: renderPatternTrain },
-  { id: 'oddOneOut', icon: '🔍', bg: 'var(--accent-purple-soft)', category: 'logic', render: renderOddOneOut },
-  { id: 'towerHanoi', icon: '🌈', bg: 'var(--accent-primary-soft)', category: 'logic', render: renderTowerHanoi },
+  { id: 'colorSudoku', icon: '🎨', theme: 'green', bg: 'var(--accent-green-soft)', category: 'logic', render: renderColorSudoku },
+  { id: 'marbleJump', icon: '🔮', theme: 'purple', bg: 'var(--accent-purple-soft)', category: 'logic', render: renderMarbleJump },
+  { id: 'patternTrain', icon: '🚂', theme: 'amber', bg: 'var(--accent-amber-soft)', category: 'logic', render: renderPatternTrain },
+  { id: 'oddOneOut', icon: '🔍', theme: 'purple', bg: 'var(--accent-purple-soft)', category: 'logic', render: renderOddOneOut },
+  { id: 'towerHanoi', icon: '🌈', theme: 'indigo', bg: 'var(--accent-primary-soft)', category: 'logic', render: renderTowerHanoi },
 
   // Shapes & Space
-  { id: 'mazeExplorer', icon: '🧭', bg: 'var(--accent-amber-soft)', category: 'spatial', render: renderMazeExplorer },
-  { id: 'mentalRotation', icon: '🔄', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderMentalRotation },
-  { id: 'shapeSorting', icon: '🧺', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderShapeSorting },
-  { id: 'patternCopy', icon: '🟦', bg: 'var(--accent-green-soft)', category: 'spatial', render: renderPatternCopy },
+  { id: 'mazeExplorer', icon: '🧭', theme: 'amber', bg: 'var(--accent-amber-soft)', category: 'spatial', render: renderMazeExplorer },
+  { id: 'mentalRotation', icon: '🔄', theme: 'teal', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderMentalRotation },
+  { id: 'shapeSorting', icon: '🧺', theme: 'teal', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderShapeSorting },
+  { id: 'patternCopy', icon: '🟦', theme: 'green', bg: 'var(--accent-green-soft)', category: 'spatial', render: renderPatternCopy },
 ];
 
 let activeScreen = 'home'; // 'home' | 'game' | 'activity'
@@ -114,9 +114,17 @@ function renderApp() {
       <div class="app-shell">
         ${topBarHtml}
         <section class="intro-card">
-          <h2 class="intro-title">🌱 ${t.intro.title}</h2>
-          <p class="intro-text">${t.intro.p1}</p>
-          <p class="intro-text">${t.intro.p2}</p>
+          <div class="intro-header-row">
+            <h2 class="intro-title">🌱 ${t.intro.title}</h2>
+          </div>
+          <div class="intro-bento-grid">
+            <div class="intro-bento-box">
+              <p class="intro-text">${t.intro.p1}</p>
+            </div>
+            <div class="intro-bento-box">
+              <p class="intro-text">${t.intro.p2}</p>
+            </div>
+          </div>
           <div class="intro-badges">
             ${t.intro.badges.map((b) => `<span class="intro-badge">${b}</span>`).join('')}
           </div>
@@ -139,17 +147,22 @@ function renderApp() {
               const gt = t.games[g.id];
               const doneCount = st.activity[g.id]?.completed || 0;
               return `
-                <button class="game-card" data-game="${g.id}">
-                  <div class="game-card-icon" style="background: ${g.bg};">${g.icon}</div>
-                  <div class="game-card-title">${gt.title}</div>
-                  <div class="game-card-skill">${gt.skill}${doneCount > 0 ? ` · ✓ ${doneCount}` : ''}</div>
+                <button class="game-card" data-game="${g.id}" data-card-theme="${g.theme}">
+                  ${doneCount > 0 ? `<span class="game-card-done" title="${t.completedCount}">✓ ${doneCount}</span>` : ''}
+                  <div class="game-card-icon" style="background: ${g.bg};">
+                    <span>${g.icon}</span>
+                  </div>
+                  <div class="game-card-body">
+                    <div class="game-card-title">${gt.title}</div>
+                    <div class="game-card-skill">${gt.skill}</div>
+                  </div>
                 </button>
               `;
             })
             .join('')}
         </main>
-        <footer style="text-align:center; font-size:0.8rem; color:var(--text-muted); padding: 8px 0;">
-          ${t.offlineReady}
+        <footer class="app-footer">
+          <span class="offline-pill">${t.offlineReady}</span>
         </footer>
       </div>
     `;
@@ -202,11 +215,14 @@ function renderApp() {
     appEl.innerHTML = `
       <div class="app-shell">
         ${topBarHtml}
-        <main class="game-view">
+        <main class="game-view" data-card-theme="${gameObj.theme}">
           <div class="game-header">
             <div class="game-header-left">
-              <span class="game-header-icon">${gameObj.icon}</span>
-              <h2 class="game-header-title">${gt.title}</h2>
+              <span class="game-header-icon" style="background: ${gameObj.bg};">${gameObj.icon}</span>
+              <div>
+                <h2 class="game-header-title">${gt.title}</h2>
+                <div class="game-header-subtitle">${gt.skill}</div>
+              </div>
             </div>
             <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
               <button class="pill-btn help-audio-btn" id="btn-game-help">${t.helpAudioBtn}</button>

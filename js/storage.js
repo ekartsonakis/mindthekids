@@ -50,7 +50,7 @@ export function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', state.theme);
   const meta = document.getElementById('meta-theme-color');
   if (meta) {
-    meta.setAttribute('content', state.theme === 'dark' ? '#181B24' : '#FAF6F0');
+    meta.setAttribute('content', state.theme === 'dark' ? '#131722' : '#F7F5F0');
   }
   saveState();
 }
