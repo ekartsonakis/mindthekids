@@ -21,18 +21,58 @@ export const TRANSLATIONS = {
     offlineReady: '✓ Έτοιμο για λειτουργία εκτός σύνδεσης (Airplane mode)',
 
     intro: {
-      title: 'Ένας ήρεμος χώρος σκέψης και ανακάλυψης',
-      p1: 'Το <strong>MindTheKids</strong> σχεδιάστηκε για να βοηθά τα παιδιά προσχολικής ηλικίας αλλά και μεγαλύτερα παιδιά να εξασκούν ευχάριστα τη <strong>μνήμη</strong>, την <strong>προσοχή</strong>, τη <strong>λογική</strong>, τη <strong>χωρική αντίληψη</strong>, τη <strong>μουσική ακοή</strong> και τις <strong>πρώτες μαθηματικές έννοιες</strong> μέσα από κλιμακούμενα επίπεδα δυσκολίας.',
-      p2: 'Για τους γονείς, προσφέρει ένα <strong>απόλυτα ασφαλές και ήρεμο περιβάλλον</strong>: χωρίς διαφημίσεις, χωρίς αγχωτικά χρονόμετρα, χωρίς υπερδιέγερση ή εθιστικά «τρικ» επιβράβευσης. Αφού ανοίξει μία φορά, αποθηκεύεται στη συσκευή ώστε να παίζεται <strong>ακόμα και σε λειτουργία πτήσης (Airplane Mode)</strong> — επιτρέποντάς σας να δώσετε το κινητό ή το tablet στο παιδί χωρίς καμία σύνδεση στο διαδίκτυο.',
-      credits: '💡 Η ιδέα και η φιλοσοφία της εφαρμογής είναι εμπνευσμένες από το εξαιρετικό webapp γνωστικών παιχνιδιών για ενήλικες <a href="https://brain.ebal.gr" target="_blank" rel="noopener noreferrer">brain.ebal.gr</a>, το οποίο ευχαριστούμε θερμά για την έμπνευση!',
-      badges: [
-        '🧠 Ενδυνάμωση Μνήμης & Σκέψης',
-        '🌿 Ήρεμο Περιβάλλον Χωρίς Άγχος',
-        '✈️ Λειτουργία σε Airplane Mode',
-        '🔒 Χωρίς Διαφημίσεις & Ιχνηλάτηση',
-        '📦 Χωρίς Εγκατάσταση από App Stores',
-        '📲 Αποθήκευση ως Εφαρμογή από τον Browser',
+      title: 'Ήρεμα παιχνίδια σκέψης για παιδιά, απόλυτη ασφάλεια για γονείς',
+      moreLink: 'ℹ️ Πώς λειτουργεί & οδηγοί για γονείς ↓',
+      nodes: [
+        {
+          icon: '🧠',
+          color: 'indigo',
+          title: '19 Παιχνίδια Μυαλού',
+          sub: 'Μνήμη, Λογική, Προσοχή, Μουσική & Αριθμοί',
+        },
+        {
+          icon: '🌿',
+          color: 'green',
+          title: 'Ήρεμο, Χωρίς Άγχος',
+          sub: 'Χωρίς πίεση χρόνου ή υπερδιέγερση',
+        },
+        {
+          icon: '✈️',
+          color: 'amber',
+          title: 'Παίζει σε Airplane Mode',
+          sub: 'Δώστε τη συσκευή με κλειστό το ίντερνετ',
+        },
+        {
+          icon: '📲',
+          color: 'purple',
+          title: 'Χωρίς Ads & App Stores',
+          sub: 'Αποθήκευση ως App από τον browser',
+        },
       ],
+      svgLabels: {
+        parent: 'Γονέας',
+        child: 'Παιδί',
+        safe: '100% Ασφαλές & Offline',
+      },
+      bottomTitle: '📖 Χρήσιμες Πληροφορίες για Γονείς',
+      bottomCards: [
+        {
+          icon: '📲',
+          title: 'Πώς αποθηκεύεται ως Εφαρμογή (χωρίς App Store);',
+          text: 'Δεν χρειάζεται εγκατάσταση από Google Play ή App Store. Από το μενού του browser σας (Chrome ή Safari) επιλέξτε <strong>«Προσθήκη στην Αρχική Οθόνη» (Add to Home Screen)</strong> και θα εμφανιστεί σαν κανονικό εικονίδιο εφαρμογής.',
+        },
+        {
+          icon: '✈️',
+          title: 'Πώς λειτουργεί σε Airplane Mode;',
+          text: 'Μόλις ανοίξετε το <strong>MindTheKids</strong> μία φορά, όλα τα 19 παιχνίδια και οι φωνητικές οδηγίες αποθηκεύονται αυτόματα στη συσκευή. Έτσι μπορείτε να κλείσετε εντελώς το Wi-Fi/Δεδομένα πριν δώσετε το κινητό ή το tablet στο παιδί.',
+        },
+        {
+          icon: '🔒',
+          title: 'Γιατί είναι ήρεμο και ασφαλές;',
+          text: 'Σχεδιασμένο με ήπιες παστέλ αποχρώσεις, κλιμακούμενη δυσκολία και φωνητική βοήθεια, χωρίς διαφημίσεις, χωρίς ιχνηλάτηση (tracking) και χωρίς εθιστικούς μηχανισμούς.',
+        },
+      ],
+      credits: '💡 Η ιδέα και η φιλοσοφία της εφαρμογής είναι εμπνευσμένες από το εξαιρετικό webapp γνωστικών παιχνιδιών για ενήλικες <a href="https://brain.ebal.gr" target="_blank" rel="noopener noreferrer">brain.ebal.gr</a>, το οποίο ευχαριστούμε θερμά για την έμπνευση!',
     },
 
     categories: {
@@ -201,18 +241,58 @@ export const TRANSLATIONS = {
     offlineReady: '✓ Ready to play offline (Airplane mode)',
 
     intro: {
-      title: 'A calm space for young minds to grow',
-      p1: '<strong>MindTheKids</strong> is designed to help preschool and older children gently exercise <strong>memory</strong>, <strong>focus</strong>, <strong>logical reasoning</strong>, <strong>spatial perception</strong>, <strong>musical ear</strong>, and <strong>early math skills</strong> across progressive difficulty levels.',
-      p2: 'For parents, it offers a <strong>completely safe, low-stimulation environment</strong>: no ads, no stressful countdown timers, no hyper-stimulating animations, and no addictive reward loops. Once opened, the entire app stays cached on your device so it works <strong>100% offline in Airplane Mode</strong> — letting you hand a phone or tablet to your child with internet completely turned off.',
-      credits: '💡 Inspired by the wonderful cognitive training web app for adults <a href="https://brain.ebal.gr" target="_blank" rel="noopener noreferrer">brain.ebal.gr</a> — warm thanks to its creator for the inspiration!',
-      badges: [
-        '🧠 Memory, Logic & Attention',
-        '🌿 Calm & Stress-Free',
-        '✈️ Works in Airplane Mode',
-        '🔒 No Ads & No Tracking',
-        '📦 No Installation from App Stores',
-        '📲 Save as an App from Your Browser',
+      title: 'Calm brain games for kids, complete peace of mind for parents',
+      moreLink: 'ℹ️ How it works & Parent Guide ↓',
+      nodes: [
+        {
+          icon: '🧠',
+          color: 'indigo',
+          title: '19 Brain Games',
+          sub: 'Memory, Logic, Focus, Music & Math',
+        },
+        {
+          icon: '🌿',
+          color: 'green',
+          title: 'Calm & Stress-Free',
+          sub: 'No pressure timers or overstimulation',
+        },
+        {
+          icon: '✈️',
+          color: 'amber',
+          title: 'Works in Airplane Mode',
+          sub: 'Hand over the device with internet off',
+        },
+        {
+          icon: '📲',
+          color: 'purple',
+          title: 'No Ads & No App Store',
+          sub: 'Save as an App straight from your browser',
+        },
       ],
+      svgLabels: {
+        parent: 'Parent',
+        child: 'Child',
+        safe: '100% Safe & Offline',
+      },
+      bottomTitle: '📖 Helpful Guide for Parents',
+      bottomCards: [
+        {
+          icon: '📲',
+          title: 'How to save it as an App (without an App Store)',
+          text: 'No download from Google Play or the App Store is needed. Open your browser menu (Chrome or Safari) and tap <strong>"Add to Home Screen"</strong> to install it like a native app.',
+        },
+        {
+          icon: '✈️',
+          title: 'How Airplane Mode works',
+          text: 'Once you open <strong>MindTheKids</strong> a single time, all 19 games and voice instructions are cached automatically on your device — so you can turn off Wi-Fi and mobile data completely before handing the device to your child.',
+        },
+        {
+          icon: '🔒',
+          title: 'Why it is calm & child-safe',
+          text: 'Designed with soothing pastel colors, progressive difficulty levels, and spoken instructions — with zero ads, zero tracking, and no addictive reward loops.',
+        },
+      ],
+      credits: '💡 Inspired by the wonderful cognitive training web app for adults <a href="https://brain.ebal.gr" target="_blank" rel="noopener noreferrer">brain.ebal.gr</a> — warm thanks to its creator for the inspiration!',
     },
 
     categories: {
