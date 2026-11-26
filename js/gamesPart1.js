@@ -549,10 +549,125 @@ export function renderMentalRotation(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 4. EMOJI MAHJONG (Easy 10, Medium 14, Hard 22 across 3 layers)
+// 4. EMOJI MAHJONG (Easy 10, Medium 14, Hard 22 across 3 layers — Intricate SVG Tiles!)
 // ============================================================================
+const MAHJONG_TILES = [
+  // Family A: Porcelain Blue & Gold Mandalas (4 look-alike geometric crests)
+  {
+    key: 'blue-1',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <circle cx="30" cy="30" r="22" fill="none" stroke="#3B62C4" stroke-width="2.5"/>
+      <circle cx="30" cy="15" r="5" fill="#5574E8"/><circle cx="30" cy="45" r="5" fill="#5574E8"/>
+      <circle cx="15" cy="30" r="5" fill="#5574E8"/><circle cx="45" cy="30" r="5" fill="#5574E8"/>
+      <circle cx="30" cy="30" r="5.5" fill="#F0A230"/>
+    </svg>`,
+  },
+  {
+    key: 'blue-2',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <circle cx="30" cy="30" r="22" fill="none" stroke="#3B62C4" stroke-width="2.5"/>
+      <circle cx="19" cy="19" r="5" fill="#5574E8"/><circle cx="41" cy="19" r="5" fill="#5574E8"/>
+      <circle cx="19" cy="41" r="5" fill="#5574E8"/><circle cx="41" cy="41" r="5" fill="#5574E8"/>
+      <polygon points="30,22 38,30 30,38 22,30" fill="#F0A230"/>
+    </svg>`,
+  },
+  {
+    key: 'blue-3',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <circle cx="30" cy="30" r="22" fill="none" stroke="#3B62C4" stroke-width="2.5" stroke-dasharray="5 3"/>
+      <polygon points="30,11 35,25 49,30 35,35 30,49 25,35 11,30 25,25" fill="#5574E8"/>
+      <circle cx="30" cy="30" r="5" fill="#FFF" stroke="#F0A230" stroke-width="3"/>
+    </svg>`,
+  },
+  {
+    key: 'blue-4',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <circle cx="30" cy="30" r="22" fill="none" stroke="#3B62C4" stroke-width="2.5"/>
+      <circle cx="30" cy="30" r="13" fill="none" stroke="#5574E8" stroke-width="3"/>
+      <circle cx="30" cy="15" r="3" fill="#F0A230"/><circle cx="30" cy="45" r="3" fill="#F0A230"/>
+      <circle cx="15" cy="30" r="3" fill="#F0A230"/><circle cx="45" cy="30" r="3" fill="#F0A230"/>
+      <rect x="25" y="25" width="10" height="10" rx="2" fill="#3B62C4"/>
+    </svg>`,
+  },
+
+  // Family B: Jade Emerald Circles & Bamboo (4 look-alike green/gold tiles)
+  {
+    key: 'jade-1',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <rect x="9" y="9" width="42" height="42" rx="8" fill="none" stroke="#2D9B6C" stroke-width="2.2"/>
+      <circle cx="30" cy="19" r="6.5" fill="#3EB57F"/><circle cx="30" cy="19" r="2.5" fill="#F0A230"/>
+      <circle cx="20" cy="39" r="6.5" fill="#3EB57F"/><circle cx="20" cy="39" r="2.5" fill="#F0A230"/>
+      <circle cx="40" cy="39" r="6.5" fill="#3EB57F"/><circle cx="40" cy="39" r="2.5" fill="#F0A230"/>
+    </svg>`,
+  },
+  {
+    key: 'jade-2',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <rect x="9" y="9" width="42" height="42" rx="8" fill="none" stroke="#2D9B6C" stroke-width="2.2"/>
+      <circle cx="20" cy="20" r="6" fill="#3EB57F"/><circle cx="20" cy="20" r="2.2" fill="#F0A230"/>
+      <circle cx="40" cy="20" r="6" fill="#3EB57F"/><circle cx="40" cy="20" r="2.2" fill="#F0A230"/>
+      <circle cx="20" cy="40" r="6" fill="#3EB57F"/><circle cx="20" cy="40" r="2.2" fill="#F0A230"/>
+      <circle cx="40" cy="40" r="6" fill="#3EB57F"/><circle cx="40" cy="40" r="2.2" fill="#F0A230"/>
+    </svg>`,
+  },
+  {
+    key: 'jade-3',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <rect x="9" y="9" width="42" height="42" rx="8" fill="none" stroke="#2D9B6C" stroke-width="2.2"/>
+      <circle cx="19" cy="19" r="5.2" fill="#3EB57F"/><circle cx="41" cy="19" r="5.2" fill="#3EB57F"/>
+      <circle cx="30" cy="30" r="5.8" fill="#F0A230"/>
+      <circle cx="19" cy="41" r="5.2" fill="#3EB57F"/><circle cx="41" cy="41" r="5.2" fill="#3EB57F"/>
+    </svg>`,
+  },
+  {
+    key: 'jade-4',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <rect x="9" y="9" width="42" height="42" rx="8" fill="none" stroke="#2D9B6C" stroke-width="2.2"/>
+      <rect x="16" y="14" width="6" height="32" rx="3" fill="#3EB57F"/>
+      <rect x="27" y="14" width="6" height="32" rx="3" fill="#3EB57F"/>
+      <rect x="38" y="14" width="6" height="32" rx="3" fill="#3EB57F"/>
+      <line x1="14" y1="30" x2="46" y2="30" stroke="#F0A230" stroke-width="3" stroke-linecap="round"/>
+    </svg>`,
+  },
+
+  // Family C: Imperial Crimson & Amber Seals (4 look-alike red/gold tiles)
+  {
+    key: 'crimson-1',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <polygon points="30,8 52,30 30,52 8,30" fill="none" stroke="#D9534F" stroke-width="2.5"/>
+      <circle cx="30" cy="22" r="5.5" fill="#E66A63"/>
+      <circle cx="30" cy="38" r="5.5" fill="#E66A63"/>
+      <circle cx="22" cy="30" r="3" fill="#F0A230"/><circle cx="38" cy="30" r="3" fill="#F0A230"/>
+    </svg>`,
+  },
+  {
+    key: 'crimson-2',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <polygon points="30,8 52,30 30,52 8,30" fill="none" stroke="#D9534F" stroke-width="2.5"/>
+      <circle cx="22" cy="30" r="5.5" fill="#E66A63"/>
+      <circle cx="38" cy="30" r="5.5" fill="#E66A63"/>
+      <circle cx="30" cy="22" r="3" fill="#F0A230"/><circle cx="30" cy="38" r="3" fill="#F0A230"/>
+    </svg>`,
+  },
+  {
+    key: 'crimson-3',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <polygon points="30,8 52,30 30,52 8,30" fill="none" stroke="#D9534F" stroke-width="2.5"/>
+      <rect x="21" y="21" width="18" height="18" rx="3" fill="none" stroke="#E66A63" stroke-width="3"/>
+      <circle cx="30" cy="30" r="4.5" fill="#D9534F"/>
+    </svg>`,
+  },
+  {
+    key: 'crimson-4',
+    svg: `<svg viewBox="0 0 60 60" class="mj-svg">
+      <polygon points="30,8 52,30 30,52 8,30" fill="none" stroke="#D9534F" stroke-width="2.5"/>
+      <polygon points="30,17 43,30 30,43 17,30" fill="none" stroke="#F0A230" stroke-width="3"/>
+      <rect x="26" y="26" width="8" height="8" fill="#D9534F"/>
+    </svg>`,
+  },
+];
+
 export function renderEmojiMahjong(stage, { t, onWin }) {
-  const icons = ['🍓', '🐳', '🌻', '🦋', '🐢', '🍄', '🐝', '🍉', '🌈', '⭐', '🦊', '🦉'];
   let level = 'easy';
   let tiles = [];
   let selectedId = null;
@@ -602,9 +717,12 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
       const secondFree = freeTiles[1];
       const partner = remaining.find((tile) => tile.id !== firstFree.id && tile.icon === firstFree.icon);
       if (partner && partner.id !== secondFree.id) {
-        const tmp = secondFree.icon;
+        const tmpIcon = secondFree.icon;
+        const tmpSvg = secondFree.svg;
         secondFree.icon = partner.icon;
-        partner.icon = tmp;
+        secondFree.svg = partner.svg;
+        partner.icon = tmpIcon;
+        partner.svg = tmpSvg;
       }
     }
   }
@@ -635,21 +753,25 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
 
     const coords = layouts[level] || layouts.easy;
     const pairCount = Math.floor(coords.length / 2);
-    const picked = shuffle(icons).slice(0, pairCount);
+    // Keep look-alike families grouped together so tiles on the board look very similar!
+    const picked = MAHJONG_TILES.slice(0, pairCount);
 
     // Construct board by peeling free pairs so a valid solution path is 100% guaranteed
     const simTiles = coords.slice(0, pairCount * 2).map((pos, id) => ({
       id,
       ...pos,
       icon: null,
+      svg: null,
       removed: false,
     }));
 
     for (let p = 0; p < pairCount; p++) {
       const freeNow = shuffle(simTiles.filter((tile) => !tile.removed && isTileFreeInList(tile, simTiles)));
       const [a, b] = freeNow.length >= 2 ? freeNow : simTiles.filter((tile) => !tile.removed);
-      a.icon = picked[p];
-      b.icon = picked[p];
+      a.icon = picked[p].key;
+      a.svg = picked[p].svg;
+      b.icon = picked[p].key;
+      b.svg = picked[p].svg;
       a.removed = true;
       b.removed = true;
     }
@@ -732,7 +854,7 @@ export function renderEmojiMahjong(stage, { t, onWin }) {
               }"
                 data-id="${tile.id}"
                 style="left: ${leftPct}%; top: ${topPct}%; width: ${tileW}%; height: ${tileH}%; z-index: ${tile.z * 10 + Math.round(tile.r)};">
-                ${tile.icon}
+                ${tile.svg}
               </button>
             `;
           })
@@ -1407,10 +1529,10 @@ export function renderSequenceMemory(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 10. FLAGS OF THE WORLD (4 Levels by Flag Pool Size, Max 4 Choices + Offline MP3 Voice!)
+// 10. FLAGS OF THE WORLD (5 Levels including Insane 193 UN Member States + Offline MP3 Voice!)
 // ============================================================================
 export function renderFlagsWorld(stage, { t, lang, onWin }) {
-  let level = 'easy'; // 'easy' (12 flags, 2 choices) | 'medium' (24 flags, 4 choices) | 'hard' (36 flags, 4 choices) | 'world' (48 flags, 4 choices)
+  let level = 'easy'; // 'easy' (12) | 'medium' (24) | 'hard' (36) | 'world' (48) | 'insane' (193 UN Countries)
   let round = 0;
   let currentTarget = null;
   let options = [];
@@ -1418,14 +1540,15 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
   let usedCodes = new Set();
 
   function getTotalRounds() {
-    return level === 'easy' ? 6 : level === 'medium' ? 8 : level === 'hard' ? 10 : 12;
+    return level === 'easy' ? 6 : level === 'medium' ? 8 : level === 'hard' ? 10 : level === 'world' ? 12 : 16;
   }
 
   function getPool() {
     if (level === 'easy') return FLAGS_DATA.filter((f) => f.tier === 1);
     if (level === 'medium') return FLAGS_DATA.filter((f) => f.tier <= 2);
     if (level === 'hard') return FLAGS_DATA.filter((f) => f.tier <= 3);
-    return FLAGS_DATA; // All 48 flags from around the world
+    if (level === 'world') return FLAGS_DATA.filter((f) => f.tier <= 4);
+    return FLAGS_DATA; // All 193 UN Member States!
   }
 
   function speakCurrent() {
@@ -1442,9 +1565,11 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
     // Pick a target country not yet asked in this session
     let candidates = pool.filter((f) => !usedCodes.has(f.code));
     if (level === 'world') {
-      // Prioritize tiers 3 & 4 in World mode so kids see global flags first
-      const globalCandidates = candidates.filter((f) => f.tier >= 3);
+      const globalCandidates = candidates.filter((f) => f.tier >= 3 && f.tier <= 4);
       if (globalCandidates.length > 0) candidates = globalCandidates;
+    } else if (level === 'insane') {
+      const insaneCandidates = candidates.filter((f) => f.tier >= 4);
+      if (insaneCandidates.length > 0 && Math.random() < 0.8) candidates = insaneCandidates;
     }
     if (candidates.length === 0) {
       usedCodes.clear();
@@ -1470,6 +1595,7 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
         <button class="level-btn ${level === 'medium' ? 'active' : ''}" data-lvl="medium">${t.levels.medium} (24)</button>
         <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard} (36)</button>
         <button class="level-btn ${level === 'world' ? 'active' : ''}" data-lvl="world">🌍 ${t.levels.world} (48)</button>
+        <button class="level-btn ${level === 'insane' ? 'active' : ''}" data-lvl="insane">🔥 ${t.levels.insane} (${FLAGS_DATA.length})</button>
       </div>
       <div class="game-prompt">
         <span>${t.games.flagsWorld.prompt} <strong>${countryName}</strong> (${round + 1}/${totalRounds})</span>

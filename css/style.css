@@ -735,8 +735,14 @@ button {
   align-items: center;
   justify-content: center;
   font-size: clamp(1.25rem, 5.2vw, 2rem);
-  padding: 0;
+  padding: 4px;
   transition: transform 0.12s ease, opacity 0.2s ease;
+}
+
+.mahjong-tile .mj-svg {
+  width: 84%;
+  height: 84%;
+  display: block;
 }
 
 .mahjong-tile.blocked {

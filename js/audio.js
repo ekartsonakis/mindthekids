@@ -42,42 +42,55 @@ export function playTone(freq = 440, duration = 0.14, type = 'sine', volume = 0.
 }
 
 /**
- * Discreet, warm music-box / soft harp note for the Melody Memory game.
+ * Clear, resonant xylophone / music-box note for the Melody Memory game.
+ * Boosted volume and warm harmonics so it is clearly audible on mobile speakers.
  */
-export function playMelodyNote(freq = 261.63, duration = 0.42) {
+export function playMelodyNote(freq = 261.63, duration = 0.52) {
   if (getState().muted) return;
   try {
     const ctx = ensureCtx();
     if (!ctx) return;
     const now = ctx.currentTime;
 
-    // Fundamental sine + very subtle warm triangle harmonic
+    // Fundamental + 2nd & 3rd xylophone harmonics for clear mobile speaker projection
     const osc1 = ctx.createOscillator();
     const osc2 = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const osc3 = ctx.createOscillator();
+    const masterGain = ctx.createGain();
 
-    osc1.type = 'sine';
+    osc1.type = 'triangle';
     osc1.frequency.setValueAtTime(freq, now);
 
-    osc2.type = 'triangle';
+    osc2.type = 'sine';
     osc2.frequency.setValueAtTime(freq * 2, now);
 
+    osc3.type = 'sine';
+    osc3.frequency.setValueAtTime(freq * 3, now);
+
     const g2 = ctx.createGain();
-    g2.gain.setValueAtTime(0.12, now);
+    g2.gain.setValueAtTime(0.28, now);
 
-    gain.gain.setValueAtTime(0.0005, now);
-    gain.gain.linearRampToValueAtTime(0.055, now + 0.025);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    const g3 = ctx.createGain();
+    g3.gain.setValueAtTime(0.1, now);
+    g3.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
 
-    osc1.connect(gain);
+    masterGain.gain.setValueAtTime(0.002, now);
+    masterGain.gain.linearRampToValueAtTime(0.42, now + 0.015);
+    masterGain.gain.exponentialRampToValueAtTime(0.0008, now + duration);
+
+    osc1.connect(masterGain);
     osc2.connect(g2);
-    g2.connect(gain);
-    gain.connect(ctx.destination);
+    g2.connect(masterGain);
+    osc3.connect(g3);
+    g3.connect(masterGain);
+    masterGain.connect(ctx.destination);
 
     osc1.start(now);
     osc2.start(now);
-    osc1.stop(now + duration + 0.03);
-    osc2.stop(now + duration + 0.03);
+    osc3.start(now);
+    osc1.stop(now + duration + 0.04);
+    osc2.stop(now + duration + 0.04);
+    osc3.stop(now + duration + 0.04);
   } catch {
     // Ignore audio context errors
   }

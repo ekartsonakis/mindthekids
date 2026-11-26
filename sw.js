@@ -1,10 +1,23 @@
-const CACHE_NAME = 'mindthekids-cache-v9';
+const CACHE_NAME = 'mindthekids-cache-v10';
 
 const FLAG_CODES = [
   'GR', 'CY', 'IT', 'FR', 'DE', 'JP', 'GB', 'US', 'BR', 'ES', 'CH', 'SE',
   'CA', 'UA', 'FI', 'DK', 'NL', 'BE', 'AR', 'CN', 'IN', 'AU', 'AT', 'IE',
   'PT', 'NO', 'PL', 'RO', 'BG', 'TR', 'EG', 'ZA', 'KE', 'NG', 'MA', 'MX',
   'CU', 'JM', 'CL', 'CO', 'PE', 'UY', 'KR', 'TH', 'VN', 'ID', 'IL', 'NZ',
+  'AL', 'AD', 'BY', 'BA', 'HR', 'CZ', 'EE', 'HU', 'IS', 'LV', 'LI', 'LT',
+  'LU', 'MT', 'MD', 'MC', 'ME', 'MK', 'RU', 'SM', 'RS', 'SK', 'SI', 'AG',
+  'BS', 'BB', 'BZ', 'BO', 'CR', 'DM', 'DO', 'EC', 'SV', 'GD', 'GT', 'GY',
+  'HT', 'HN', 'NI', 'PA', 'PY', 'KN', 'LC', 'VC', 'SR', 'TT', 'VE', 'AF',
+  'AM', 'AZ', 'BH', 'BD', 'BT', 'BN', 'KH', 'GE', 'IR', 'IQ', 'JO', 'KZ',
+  'KW', 'KG', 'LA', 'LB', 'MY', 'MV', 'MN', 'MM', 'NP', 'KP', 'OM', 'PK',
+  'PH', 'QA', 'SA', 'SG', 'LK', 'SY', 'TJ', 'TL', 'TM', 'AE', 'UZ', 'YE',
+  'DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CV', 'CM', 'CF', 'TD', 'KM', 'CG',
+  'CD', 'CI', 'DJ', 'GQ', 'ER', 'SZ', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW',
+  'LS', 'LR', 'LY', 'MG', 'MW', 'ML', 'MR', 'MU', 'MZ', 'NA', 'NE', 'RW',
+  'ST', 'SN', 'SC', 'SL', 'SO', 'SS', 'SD', 'TZ', 'TG', 'TN', 'UG', 'ZM',
+  'ZW', 'FJ', 'KI', 'MH', 'FM', 'NR', 'PW', 'PG', 'WS', 'SB', 'TO', 'TV',
+  'VU',
 ];
 
 const GAME_IDS = [

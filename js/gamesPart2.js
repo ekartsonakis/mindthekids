@@ -1013,17 +1013,19 @@ export function renderPatternCopy(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 18. MELODY MEMORY (Μουσική Ακολουθία — Build a Real Melody Note by Note!)
+// 18. MELODY MEMORY (Μουσική Ακολουθία — Build a Real Melody + Free Play Xylophone!)
 // ============================================================================
 export function renderMelodyMemory(stage, { t, lang, onWin }) {
-  // 6 diatonic notes (C4 to A4) with soft pastel xylophone colors
+  // Full 8-note C Major octave (C4 to C5) with soft pastel xylophone colors
   const NOTES = [
-    { id: 0, el: 'Ντο', en: 'Do', freq: 261.63, color: '#F9C6C9', height: 155 }, // C4
-    { id: 1, el: 'Ρε', en: 'Re', freq: 293.66, color: '#FAD9B4', height: 146 }, // D4
-    { id: 2, el: 'Μι', en: 'Mi', freq: 329.63, color: '#FAF0B8', height: 137 }, // E4
-    { id: 3, el: 'Φα', en: 'Fa', freq: 349.23, color: '#C5EED6', height: 128 }, // F4
-    { id: 4, el: 'Σολ', en: 'Sol', freq: 392.00, color: '#C4DCF7', height: 119 }, // G4
-    { id: 5, el: 'Λα', en: 'La', freq: 440.00, color: '#DEC9F6', height: 110 }, // A4
+    { id: 0, el: 'Ντο', en: 'Do', freq: 261.63, color: '#F9C6C9', height: 158 }, // C4
+    { id: 1, el: 'Ρε', en: 'Re', freq: 293.66, color: '#FAD9B4', height: 150 }, // D4
+    { id: 2, el: 'Μι', en: 'Mi', freq: 329.63, color: '#FAF0B8', height: 142 }, // E4
+    { id: 3, el: 'Φα', en: 'Fa', freq: 349.23, color: '#C5EED6', height: 134 }, // F4
+    { id: 4, el: 'Σολ', en: 'Sol', freq: 392.00, color: '#C4DCF7', height: 126 }, // G4
+    { id: 5, el: 'Λα', en: 'La', freq: 440.00, color: '#DEC9F6', height: 118 }, // A4
+    { id: 6, el: 'Σι', en: 'Si', freq: 493.88, color: '#F7C6E8', height: 110 }, // B4
+    { id: 7, el: 'Ντο high', labelEl: "Ντο'", labelEn: "Do'", freq: 523.25, color: '#B8EFEA', height: 102 }, // C5
   ];
 
   // Real, recognizable children's melodies built from note indices (0=Do, 1=Re, 2=Mi, 3=Fa, 4=Sol, 5=La)
@@ -1036,12 +1038,13 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
     [2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1],
   ];
 
-  let level = 'easy'; // easy (5 notes), medium (8 notes), hard (full melody 14 notes)
+  let level = 'easy'; // 'easy' (5 notes), 'medium' (8 notes), 'hard' (full melody), 'free' (Free Play!)
   let songIdx = 0;
   let currentLen = 2; // Starts with 2 notes and grows by 1 each step!
   let userStep = 0;
   let playingSeq = false;
   let activeKey = -1;
+  let freeHistory = [];
   let timeouts = [];
 
   function getTargetLen() {
@@ -1056,12 +1059,20 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
 
   function startMelody() {
     clearTimers();
+    playingSeq = false;
+    activeKey = -1;
+    freeHistory = [];
+    if (level === 'free') {
+      draw();
+      return;
+    }
     currentLen = 2;
     userStep = 0;
     playPhrase();
   }
 
   function playPhrase() {
+    if (level === 'free') return;
     clearTimers();
     playingSeq = true;
     userStep = 0;
@@ -1072,7 +1083,7 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
     phrase.forEach((noteId, idx) => {
       const t1 = setTimeout(() => {
         activeKey = noteId;
-        playMelodyNote(NOTES[noteId].freq, 0.44);
+        playMelodyNote(NOTES[noteId].freq, 0.48);
         draw();
       }, 450 + idx * 600);
 
@@ -1092,10 +1103,29 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
     timeouts.push(tEnd);
   }
 
+  function getNoteDisplayName(n) {
+    if (lang === 'el') return n.labelEl || n.el;
+    return n.labelEn || n.en;
+  }
+
   function handleKeyTap(noteId) {
     if (playingSeq) return;
     activeKey = noteId;
-    playMelodyNote(NOTES[noteId].freq, 0.42);
+    playMelodyNote(NOTES[noteId].freq, 0.5);
+
+    if (level === 'free') {
+      freeHistory.push(NOTES[noteId]);
+      if (freeHistory.length > 10) freeHistory.shift();
+      draw();
+      setTimeout(() => {
+        if (activeKey === noteId) {
+          activeKey = -1;
+          draw();
+        }
+      }, 220);
+      return;
+    }
+
     draw();
     setTimeout(() => {
       activeKey = -1;
@@ -1123,45 +1153,79 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
   }
 
   function draw() {
+    const isFree = level === 'free';
     const targetLen = getTargetLen();
-    const songTitle = t.games.melodyMemory.songNames[songIdx] || '';
+    const visibleNotes = isFree ? NOTES : NOTES.slice(0, 6);
 
     stage.innerHTML = `
       <div class="level-selector">
         <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy} (5)</button>
         <button class="level-btn ${level === 'medium' ? 'active' : ''}" data-lvl="medium">${t.levels.medium} (8)</button>
         <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard} (${MELODIES[songIdx].length})</button>
+        <button class="level-btn ${level === 'free' ? 'active' : ''}" data-lvl="free">${t.levels.freePlay}</button>
       </div>
-      <div class="level-selector" style="margin-top: -6px;">
-        ${t.games.melodyMemory.songNames
-          .map(
-            (name, idx) => `
-          <button class="level-btn ${songIdx === idx ? 'active' : ''}" data-song="${idx}">🎶 ${name}</button>
-        `
-          )
-          .join('')}
-      </div>
+      ${
+        !isFree
+          ? `<div class="level-selector" style="margin-top: -6px;">
+              ${t.games.melodyMemory.songNames
+                .map(
+                  (name, idx) => `
+                <button class="level-btn ${songIdx === idx ? 'active' : ''}" data-song="${idx}">🎶 ${name}</button>
+              `
+                )
+                .join('')}
+            </div>`
+          : ''
+      }
       <div class="game-prompt">
-        <span>${playingSeq ? t.games.melodyMemory.watchPrompt : t.games.melodyMemory.tapPrompt}</span>
-        <strong>(${currentLen}/${targetLen})</strong>
+        ${
+          isFree
+            ? `<span>${t.games.melodyMemory.freePlayPrompt}</span>`
+            : `<span>${playingSeq ? t.games.melodyMemory.watchPrompt : t.games.melodyMemory.tapPrompt}</span>
+               <strong>(${currentLen}/${targetLen})</strong>`
+        }
       </div>
+      ${
+        isFree
+          ? `<div class="free-notes-trail" style="min-height: 36px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; margin-bottom:10px;">
+              ${
+                freeHistory.length === 0
+                  ? `<span style="color:var(--text-muted); font-size:0.9rem; font-weight:700;">🎵 ...</span>`
+                  : freeHistory
+                      .map(
+                        (n) =>
+                          `<span style="background:${n.color}; color:#252230; padding:4px 10px; border-radius:999px; font-weight:800; font-size:0.85rem; box-shadow:0 2px 5px rgba(0,0,0,0.08);">♪ ${getNoteDisplayName(
+                            n
+                          )}</span>`
+                      )
+                      .join('')
+              }
+            </div>`
+          : ''
+      }
       <div class="melody-keyboard">
-        ${NOTES.map(
-          (n) => `
+        ${visibleNotes
+          .map(
+            (n) => `
           <button class="melody-key ${activeKey === n.id ? 'active-note' : ''}"
             data-note="${n.id}"
             style="background: ${n.color}; height: ${n.height}px;">
             <span class="note-dot"></span>
-            <span class="note-name">${lang === 'el' ? n.el : n.en}</span>
+            <span class="note-name">${getNoteDisplayName(n)}</span>
           </button>
         `
-        ).join('')}
+          )
+          .join('')}
       </div>
-      <div class="choice-row">
-        <button class="pill-btn" id="melody-replay" ${playingSeq ? 'disabled style="opacity:0.5"' : ''}>
-          ${t.replayMelody}
-        </button>
-      </div>
+      ${
+        !isFree
+          ? `<div class="choice-row">
+              <button class="pill-btn" id="melody-replay" ${playingSeq ? 'disabled style="opacity:0.5"' : ''}>
+                ${t.replayMelody}
+              </button>
+            </div>`
+          : ''
+      }
     `;
 
     stage.querySelectorAll('[data-lvl]').forEach((btn) => {

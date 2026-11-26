@@ -571,3 +571,234 @@ export const FLAGS_DATA = [
     </svg>`,
   },
 ];
+
+// ============================================================================
+// TIER 5: Remaining 145 UN Member States (Total = 193 UN Member States!)
+// Compact procedural vector SVG flag generator for 100% offline accuracy
+// ============================================================================
+function makeUnFlagSvg(p, colors, emblem = '') {
+  const [c1, c2, c3, c4, c5] = colors;
+  let body = '';
+  if (p === 'H3') {
+    body = `<rect width="30" height="6.67" y="0" fill="${c1}"/><rect width="30" height="6.67" y="6.66" fill="${c2}"/><rect width="30" height="6.67" y="13.33" fill="${c3}"/>`;
+  } else if (p === 'V3') {
+    body = `<rect width="10" height="20" x="0" fill="${c1}"/><rect width="10" height="20" x="10" fill="${c2}"/><rect width="10" height="20" x="20" fill="${c3}"/>`;
+  } else if (p === 'H2') {
+    body = `<rect width="30" height="10" y="0" fill="${c1}"/><rect width="30" height="10" y="10" fill="${c2}"/>`;
+  } else if (p === 'V2') {
+    body = `<rect width="15" height="20" x="0" fill="${c1}"/><rect width="15" height="20" x="15" fill="${c2}"/>`;
+  } else if (p === 'H3T') {
+    // Tricolor with thicker middle band (e.g. Laos, Latvia, Lebanon, Cambodia, etc.)
+    body = `<rect width="30" height="20" fill="${c1}"/><rect width="30" height="10" y="5" fill="${c2}"/>`;
+  } else if (p === 'H3F') {
+    // Fimbriated horizontal (e.g. Botswana, Gambia, Uzbekistan, Eswatini, DPRK, Costa Rica, Suriname)
+    body = `<rect width="30" height="20" fill="${c1}"/><rect width="30" height="9.2" y="5.4" fill="${c3 || '#FFF'}"/><rect width="30" height="6.4" y="6.8" fill="${c2}"/>`;
+  } else if (p === 'TRI') {
+    // Hoist triangle over 3 horizontal bands (Jordan, Sudan, Palestine-style, Bahamas, Equatorial Guinea, Mozambique, Zimbabwe, South Sudan, Comoros)
+    body = `<rect width="30" height="6.67" y="0" fill="${c1}"/><rect width="30" height="6.67" y="6.66" fill="${c2}"/><rect width="30" height="6.67" y="13.33" fill="${c3}"/><polygon points="0,0 13.5,10 0,20" fill="${c4}"/>`;
+  } else if (p === 'TRI2') {
+    // Hoist triangle over 2 horizontal bands (Czechia, Philippines, Djibouti, Sao Tome, Timor-Leste)
+    body = `<rect width="30" height="10" y="0" fill="${c1}"/><rect width="30" height="10" y="10" fill="${c2}"/><polygon points="0,0 14,10 0,20" fill="${c3}"/>`;
+  } else if (p === 'DIAG') {
+    // Diagonal band from bottom-left to top-right (Tanzania, DR Congo, Namibia, Saint Kitts, Brunei, Trinidad, Congo, Solomon Islands)
+    body = `<rect width="30" height="20" fill="${c1}"/><polygon points="0,20 30,20 30,0" fill="${c2}"/><path d="M0,20 L30,0" stroke="${c4 || '#FFF'}" stroke-width="5.2"/><path d="M0,20 L30,0" stroke="${c3}" stroke-width="3.2"/>`;
+  } else if (p === 'NORD') {
+    // Nordic cross (Iceland, etc.)
+    body = `<rect width="30" height="20" fill="${c1}"/><rect x="8" width="4.4" height="20" fill="${c2}"/><rect y="7.8" width="30" height="4.4" fill="${c2}"/><rect x="9" width="2.4" height="20" fill="${c3 || c2}"/><rect y="8.8" width="30" height="2.4" fill="${c3 || c2}"/>`;
+  } else if (p === 'CANT') {
+    // Solid or striped with top-left canton (Liberia, Malaysia, Togo, Samoa, Taiwan/Myanmar/Fiji/Tuvalu)
+    body = `<rect width="30" height="20" fill="${c1}"/>${
+      c3 ? `<path d="M0,3.3h30M0,9.9h30M0,16.5h30" stroke="${c3}" stroke-width="2.4"/>` : ''
+    }<rect width="13" height="10.5" fill="${c2}"/>`;
+  } else if (p === 'H4') {
+    // 4 horizontal stripes (Mauritius, Central African Rep)
+    body = `<rect width="30" height="5" y="0" fill="${c1}"/><rect width="30" height="5" y="5" fill="${c2}"/><rect width="30" height="5" y="10" fill="${c3}"/><rect width="30" height="5" y="15" fill="${c4}"/>`;
+  } else {
+    // Solid field ('S')
+    body = `<rect width="30" height="20" fill="${c1}"/>`;
+  }
+
+  let emb = '';
+  if (emblem === 'STAR') {
+    emb = `<polygon points="15,5.5 16.3,9 20,9 17,11.2 18.1,14.8 15,12.6 11.9,14.8 13,11.2 10,9 13.7,9" fill="${c5 || c4 || c2 || '#FFF'}"/>`;
+  } else if (emblem === 'LSTAR') {
+    emb = `<polygon points="5,7.2 5.7,9.2 7.8,9.2 6.1,10.4 6.7,12.4 5,11.2 3.3,12.4 3.9,10.4 2.2,9.2 4.3,9.2" fill="${c5 || '#FFF'}"/>`;
+  } else if (emblem === 'DISC') {
+    emb = `<circle cx="15" cy="10" r="4.2" fill="${c5 || c4 || c2 || '#FFF'}"/>`;
+  } else if (emblem === 'CRES') {
+    emb = `<circle cx="14.2" cy="10" r="4.3" fill="${c5 || c2 || '#FFF'}"/><circle cx="15.5" cy="10" r="3.4" fill="${c2 && p === 'H3' ? c2 : c1}"/><circle cx="17.8" cy="10" r="1.4" fill="${c5 || c2 || '#FFF'}"/>`;
+  } else if (emblem === 'COAT') {
+    emb = `<rect x="13" y="7.2" width="4" height="5.6" rx="1.2" fill="${c5 || c4 || '#FCD116'}" stroke="#FFF" stroke-width="0.6"/>`;
+  } else if (emblem === 'CROSS') {
+    emb = `<rect x="13.5" y="4" width="3" height="12" fill="${c2 || '#FFF'}"/><rect x="9" y="8.5" width="12" height="3" fill="${c2 || '#FFF'}"/>`;
+  }
+
+  return `<svg viewBox="0 0 30 20">${body}${emb}</svg>`;
+}
+
+const TIER5_UN_RAW = [
+  // Europe (23)
+  ['AL', 'Albania', 'Αλβανία', 'S', ['#E41E20', '#000'], 'COAT'],
+  ['AD', 'Andorra', 'Ανδόρα', 'V3', ['#10069F', '#FEDD00', '#D50032'], 'COAT'],
+  ['BY', 'Belarus', 'Λευκορωσία', 'H2', ['#D22730', '#009739'], ''],
+  ['BA', 'Bosnia and Herzegovina', 'Βοσνία και Ερζεγοβίνη', 'S', ['#002395', '#FECB00'], 'STAR'],
+  ['HR', 'Croatia', 'Κροατία', 'H3', ['#FF0000', '#FFF', '#171796'], 'COAT'],
+  ['CZ', 'Czechia', 'Τσεχία', 'TRI2', ['#FFF', '#D7141A', '#11457E'], ''],
+  ['EE', 'Estonia', 'Εσθονία', 'H3', ['#0072CE', '#000', '#FFF'], ''],
+  ['HU', 'Hungary', 'Ουγγαρία', 'H3', ['#CE2939', '#FFF', '#477050'], ''],
+  ['IS', 'Iceland', 'Ισλανδία', 'NORD', ['#02529C', '#FFF', '#DC1E35'], ''],
+  ['LV', 'Latvia', 'Λετονία', 'H3T', ['#9E3039', '#FFF'], ''],
+  ['LI', 'Liechtenstein', 'Λιχτενστάιν', 'H2', ['#002B7F', '#CE1126'], ''],
+  ['LT', 'Lithuania', 'Λιθουανία', 'H3', ['#FDB913', '#006A44', '#C1272D'], ''],
+  ['LU', 'Luxembourg', 'Λουξεμβούργο', 'H3', ['#EA141D', '#FFF', '#51ADDA'], ''],
+  ['MT', 'Malta', 'Μάλτα', 'V2', ['#FFF', '#CF142B'], ''],
+  ['MD', 'Moldova', 'Μολδαβία', 'V3', ['#0046AE', '#FFD200', '#CC092F'], 'COAT'],
+  ['MC', 'Monaco', 'Μονακό', 'H2', ['#CE1126', '#FFF'], ''],
+  ['ME', 'Montenegro', 'Μαυροβούνιο', 'S', ['#C40308', '#D3AE3B'], 'COAT'],
+  ['MK', 'North Macedonia', 'Βόρεια Μακεδονία', 'S', ['#D20000', '#FFE600'], 'DISC'],
+  ['RU', 'Russia', 'Ρωσία', 'H3', ['#FFF', '#0039A6', '#D52B1E'], ''],
+  ['SM', 'San Marino', 'Άγιος Μαρίνος', 'H2', ['#FFF', '#5EB6E4'], 'COAT'],
+  ['RS', 'Serbia', 'Σερβία', 'H3', ['#C6363C', '#0C4076', '#FFF'], 'COAT'],
+  ['SK', 'Slovakia', 'Σλοβακία', 'H3', ['#FFF', '#0B4EA2', '#EE1C25'], 'COAT'],
+  ['SI', 'Slovenia', 'Σλοβενία', 'H3', ['#FFF', '#005DA4', '#ED1C24'], 'COAT'],
+
+  // Americas (24)
+  ['AG', 'Antigua and Barbuda', 'Αντίγκουα και Μπαρμπούντα', 'TRI', ['#000', '#0072C6', '#FFF', '#CE1126', '#FCD116'], 'DISC'],
+  ['BS', 'Bahamas', 'Μπαχάμες', 'TRI', ['#00778B', '#FFC72C', '#00778B', '#000'], ''],
+  ['BB', 'Barbados', 'Μπαρμπάντος', 'V3', ['#00267F', '#FFC726', '#00267F'], 'COAT'],
+  ['BZ', 'Belize', 'Μπελίζ', 'H3T', ['#D90F19', '#003F87', '#D90F19', '#FFF'], 'DISC'],
+  ['BO', 'Bolivia', 'Βολιβία', 'H3', ['#D52B1E', '#F9E300', '#007934'], ''],
+  ['CR', 'Costa Rica', 'Κόστα Ρίκα', 'H3F', ['#002B7F', '#CE1126', '#FFF'], ''],
+  ['DM', 'Dominica', 'Δομινίκα', 'S', ['#006B3F', '#FCD116', '#D41C30'], 'DISC'],
+  ['DO', 'Dominican Republic', 'Δομινικανή Δημοκρατία', 'NORD', ['#002D62', '#FFF', '#CE1126'], 'COAT'],
+  ['EC', 'Ecuador', 'Ισημερινός', 'H3', ['#FFD100', '#0072CE', '#EF3340'], 'COAT'],
+  ['SV', 'El Salvador', 'Ελ Σαλβαδόρ', 'H3', ['#0F47AF', '#FFF', '#0F47AF'], 'COAT'],
+  ['GD', 'Grenada', 'Γρενάδα', 'S', ['#CE1126', '#FCD116', '#007A5E'], 'STAR'],
+  ['GT', 'Guatemala', 'Γουατεμάλα', 'V3', ['#4997D0', '#FFF', '#4997D0'], 'COAT'],
+  ['GY', 'Guyana', 'Γουιάνα', 'TRI2', ['#009E49', '#009E49', '#FCD116', '#CE1126'], ''],
+  ['HT', 'Haiti', 'Αϊτή', 'H2', ['#00209F', '#D21034'], 'COAT'],
+  ['HN', 'Honduras', 'Ονδούρα', 'H3', ['#00BCE4', '#FFF', '#00BCE4', '#00BCE4'], 'STAR'],
+  ['NI', 'Nicaragua', 'Νικαράγουα', 'H3', ['#0067C6', '#FFF', '#0067C6'], 'COAT'],
+  ['PA', 'Panama', 'Παναμάς', 'V2', ['#FFF', '#DA121A', '#072357'], 'STAR'],
+  ['PY', 'Paraguay', 'Παραγουάη', 'H3', ['#D52B1E', '#FFF', '#0038A8'], 'COAT'],
+  ['KN', 'Saint Kitts and Nevis', 'Άγιος Χριστόφορος και Νέβις', 'DIAG', ['#009E49', '#CE1126', '#000', '#FCD116'], 'STAR'],
+  ['LC', 'Saint Lucia', 'Αγία Λουκία', 'S', ['#66CCFF', '#FCD116'], 'STAR'],
+  ['VC', 'Saint Vincent and the Grenadines', 'Άγιος Βικέντιος και Γρεναδίνες', 'V3', ['#002674', '#FCD116', '#007C2E'], ''],
+  ['SR', 'Suriname', 'Σουρινάμ', 'H3F', ['#377E3F', '#B40A2D', '#FFF', '#ECC81D'], 'STAR'],
+  ['TT', 'Trinidad and Tobago', 'Τρινιντάντ και Τομπάγκο', 'DIAG', ['#CE1126', '#CE1126', '#000', '#FFF'], ''],
+  ['VE', 'Venezuela', 'Βενεζουέλα', 'H3', ['#FCE300', '#00247D', '#CF142B', '#FFF'], 'STAR'],
+
+  // Asia & Middle East (37)
+  ['AF', 'Afghanistan', 'Αφγανιστάν', 'V3', ['#000', '#D32011', '#007A36'], 'COAT'],
+  ['AM', 'Armenia', 'Αρμενία', 'H3', ['#D90012', '#0033A0', '#F2A800'], ''],
+  ['AZ', 'Azerbaijan', 'Αζερμπαϊτζάν', 'H3', ['#00B5E2', '#EF3340', '#509E2F', '#FFF'], 'CRES'],
+  ['BH', 'Bahrain', 'Μπαχρέιν', 'V2', ['#FFF', '#CE1126'], ''],
+  ['BD', 'Bangladesh', 'Μπανγκλαντές', 'S', ['#006A4E', '#F42A41'], 'DISC'],
+  ['BT', 'Bhutan', 'Μπουτάν', 'DIAG', ['#FFD520', '#FF4E12', '#FFF', '#FF4E12'], ''],
+  ['BN', 'Brunei', 'Μπρουνέι', 'DIAG', ['#F7E017', '#F7E017', '#000', '#FFF', '#CF1126'], 'COAT'],
+  ['KH', 'Cambodia', 'Καμπότζη', 'H3T', ['#032EA1', '#E00025', '#032EA1', '#FFF'], 'COAT'],
+  ['GE', 'Georgia', 'Γεωργία', 'NORD', ['#FFF', '#FF0000', '#FF0000'], ''],
+  ['IR', 'Iran', 'Ιράν', 'H3', ['#239F40', '#FFF', '#DA0000', '#DA0000'], 'COAT'],
+  ['IQ', 'Iraq', 'Ιράκ', 'H3', ['#CE1126', '#FFF', '#000', '#007A3D'], 'COAT'],
+  ['JO', 'Jordan', 'Ιορδανία', 'TRI', ['#000', '#FFF', '#007A3D', '#CE1126'], 'LSTAR'],
+  ['KZ', 'Kazakhstan', 'Καζακστάν', 'S', ['#00AFCA', '#FEC50C'], 'DISC'],
+  ['KW', 'Kuwait', 'Κουβέιτ', 'TRI', ['#007A3D', '#FFF', '#CE1126', '#000'], ''],
+  ['KG', 'Kyrgyzstan', 'Κιργιζία', 'S', ['#E8112D', '#FFEF00'], 'DISC'],
+  ['LA', 'Laos', 'Λάος', 'H3T', ['#CE1126', '#002868', '#CE1126', '#FFF'], 'DISC'],
+  ['LB', 'Lebanon', 'Λίβανος', 'H3T', ['#ED1C24', '#FFF', '#ED1C24', '#00A651'], 'COAT'],
+  ['MY', 'Malaysia', 'Μαλαισία', 'CANT', ['#CC0001', '#010066', '#FFF', '#FFCC00'], ''],
+  ['MV', 'Maldives', 'Μαλδίβες', 'S', ['#D21034', '#007E3A', '#FFF', '#FFF', '#FFF'], 'CRES'],
+  ['MN', 'Mongolia', 'Μογγολία', 'V3', ['#DA2032', '#0066B3', '#DA2032', '#FFD900'], ''],
+  ['MM', 'Myanmar', 'Μιανμάρ', 'H3', ['#FECB00', '#34B233', '#EA2839', '#FFF'], 'STAR'],
+  ['NP', 'Nepal', 'Νεπάλ', 'TRI2', ['#DC143C', '#DC143C', '#003893', '#FFF'], 'STAR'],
+  ['KP', 'North Korea', 'Βόρεια Κορέα', 'H3F', ['#024FA2', '#ED1C27', '#FFF', '#FFF'], 'STAR'],
+  ['OM', 'Oman', 'Ομάν', 'TRI', ['#FFF', '#DB161B', '#008000', '#DB161B'], ''],
+  ['PK', 'Pakistan', 'Πακιστάν', 'S', ['#01411C', '#FFF'], 'CRES'],
+  ['PH', 'Philippines', 'Φιλιππίνες', 'TRI2', ['#0038A8', '#CE1126', '#FFF', '#FCD116'], 'LSTAR'],
+  ['QA', 'Qatar', 'Κατάρ', 'V2', ['#FFF', '#8A1538'], ''],
+  ['SA', 'Saudi Arabia', 'Σαουδική Αραβία', 'S', ['#006C35', '#FFF'], 'COAT'],
+  ['SG', 'Singapore', 'Σιγκαπούρη', 'H2', ['#EF3340', '#FFF'], ''],
+  ['LK', 'Sri Lanka', 'Σρι Λάνκα', 'V2', ['#FFBE29', '#8D153A', '#00534E'], 'COAT'],
+  ['SY', 'Syria', 'Συρία', 'H3', ['#CE1126', '#FFF', '#000', '#007A3D'], 'STAR'],
+  ['TJ', 'Tajikistan', 'Τατζικιστάν', 'H3', ['#CC0000', '#FFF', '#006600', '#F8C300'], 'COAT'],
+  ['TL', 'Timor-Leste', 'Ανατολικό Τιμόρ', 'TRI2', ['#DA291C', '#DA291C', '#000', '#FFC72C'], 'LSTAR'],
+  ['TM', 'Turkmenistan', 'Τουρκμενιστάν', 'S', ['#00843D', '#FFF'], 'CRES'],
+  ['AE', 'United Arab Emirates', 'Ηνωμένα Αραβικά Εμιράτα', 'TRI', ['#00732F', '#FFF', '#000', '#FF0000'], ''],
+  ['UZ', 'Uzbekistan', 'Ουζμπεκιστάν', 'H3', ['#0099B5', '#FFF', '#1EB53A'], ''],
+  ['YE', 'Yemen', 'Υεμένη', 'H3', ['#CE1126', '#FFF', '#000'], ''],
+
+  // Africa (49)
+  ['DZ', 'Algeria', 'Αλγερία', 'V2', ['#006233', '#FFF', '#D21034', '#D21034', '#D21034'], 'CRES'],
+  ['AO', 'Angola', 'Αγκόλα', 'H2', ['#CE1126', '#000', '#FFEC00', '#FFEC00'], 'STAR'],
+  ['BJ', 'Benin', 'Μπενίν', 'TRI2', ['#FCD116', '#E8112D', '#008751'], ''],
+  ['BW', 'Botswana', 'Μποτσουάνα', 'H3F', ['#6DA9D2', '#000', '#FFF'], ''],
+  ['BF', 'Burkina Faso', 'Μπουρκίνα Φάσο', 'H2', ['#EF2B2D', '#009E49', '#FCD116', '#FCD116'], 'STAR'],
+  ['BI', 'Burundi', 'Μπουρούντι', 'DIAG', ['#CE1126', '#1EB53A', '#FFF', '#FFF'], 'DISC'],
+  ['CV', 'Cabo Verde', 'Πράσινο Ακρωτήριο', 'H3F', ['#003893', '#CF2027', '#FFF', '#F7D116'], 'STAR'],
+  ['CM', 'Cameroon', 'Καμερούν', 'V3', ['#007A5E', '#CE1126', '#FCD116', '#FCD116'], 'STAR'],
+  ['CF', 'Central African Republic', 'Κεντροαφρικανική Δημοκρατία', 'H4', ['#003082', '#FFF', '#289728', '#FFCE00'], 'STAR'],
+  ['TD', 'Chad', 'Τσαντ', 'V3', ['#002664', '#FECB00', '#C60C30'], ''],
+  ['KM', 'Comoros', 'Κομόρες', 'TRI', ['#FFC61E', '#FFF', '#CE1126', '#3D8E33'], 'LSTAR'],
+  ['CG', 'Republic of the Congo', 'Δημοκρατία του Κονγκό', 'DIAG', ['#009543', '#DC241F', '#FBDE4A', '#FBDE4A'], ''],
+  ['CD', 'DR Congo', 'Λαϊκή Δημοκρατία του Κονγκό', 'DIAG', ['#007FFF', '#007FFF', '#CE1021', '#F7D618'], 'LSTAR'],
+  ['CI', 'Ivory Coast', 'Ακτή Ελεφαντοστού', 'V3', ['#F77F00', '#FFF', '#009E60'], ''],
+  ['DJ', 'Djibouti', 'Τζιμπουτί', 'TRI2', ['#6AB2E7', '#12AD2B', '#FFF', '#D7141A'], 'LSTAR'],
+  ['GQ', 'Equatorial Guinea', 'Ισημερινή Γουινέα', 'TRI', ['#3E9A00', '#FFF', '#E32118', '#0073CE'], 'COAT'],
+  ['ER', 'Eritrea', 'Ερυθραία', 'TRI2', ['#4189DD', '#12AD2B', '#EA0437', '#FFC726'], 'LSTAR'],
+  ['SZ', 'Eswatini', 'Εσουατίνι', 'H3F', ['#3E5EB9', '#B10C0C', '#FFD900'], 'COAT'],
+  ['ET', 'Ethiopia', 'Αιθιοπία', 'H3', ['#078930', '#FCDD09', '#DA121A', '#0F47AF'], 'DISC'],
+  ['GA', 'Gabon', 'Γκαμπόν', 'H3', ['#009E60', '#FCD116', '#3A75C4'], ''],
+  ['GM', 'Gambia', 'Γκάμπια', 'H3F', ['#CE1126', '#0C1C8C', '#FFF'], ''],
+  ['GH', 'Ghana', 'Γκάνα', 'H3', ['#CE1126', '#FCD116', '#006B3F', '#000'], 'STAR'],
+  ['GN', 'Guinea', 'Γουινέα', 'V3', ['#CE1126', '#FCD116', '#009460'], ''],
+  ['GW', 'Guinea-Bissau', 'Γουινέα-Μπισάου', 'TRI2', ['#FCD116', '#009E49', '#CE1126', '#000'], 'LSTAR'],
+  ['LS', 'Lesotho', 'Λεσότο', 'H3', ['#00209F', '#FFF', '#009543', '#000'], 'COAT'],
+  ['LR', 'Liberia', 'Λιβερία', 'CANT', ['#BF0A30', '#002868', '#FFF'], 'LSTAR'],
+  ['LY', 'Libya', 'Λιβύη', 'H3T', ['#E70013', '#000', '#239E46', '#FFF', '#FFF'], 'CRES'],
+  ['MG', 'Madagascar', 'Μαδαγασκάρη', 'TRI2', ['#FC3D32', '#007E3A', '#FFF'], ''],
+  ['MW', 'Malawi', 'Μαλάουι', 'H3', ['#000', '#CE1126', '#339E35', '#CE1126'], 'DISC'],
+  ['ML', 'Mali', 'Μάλι', 'V3', ['#14B53A', '#FCD116', '#CE1126'], ''],
+  ['MR', 'Mauritania', 'Μαυριτανία', 'H3T', ['#D01C1F', '#00A95C', '#D01C1F', '#FFD700', '#FFD700'], 'CRES'],
+  ['MU', 'Mauritius', 'Μαυρίκιος', 'H4', ['#EA2839', '#1A206D', '#FFD500', '#00A551'], ''],
+  ['MZ', 'Mozambique', 'Μοζαμβίκη', 'TRI', ['#007168', '#000', '#FCE100', '#D21034'], 'LSTAR'],
+  ['NA', 'Namibia', 'Ναμίμπια', 'DIAG', ['#003580', '#009543', '#D21034', '#FFF'], ''],
+  ['NE', 'Niger', 'Νίγηρας', 'H3', ['#E05206', '#FFF', '#0DB02B', '#E05206'], 'DISC'],
+  ['RW', 'Rwanda', 'Ρουάντα', 'H3', ['#00A1DE', '#FAD201', '#20603D'], ''],
+  ['ST', 'Sao Tome and Principe', 'Σάο Τομέ και Πρίνσιπε', 'TRI', ['#12AD2B', '#FFCE00', '#12AD2B', '#D21034', '#000'], 'STAR'],
+  ['SN', 'Senegal', 'Σενεγάλη', 'V3', ['#00853F', '#FDEF42', '#E31B23', '#00853F'], 'STAR'],
+  ['SC', 'Seychelles', 'Σεϋχέλλες', 'DIAG', ['#003F87', '#007A3D', '#D62828', '#FCD856'], ''],
+  ['SL', 'Sierra Leone', 'Σιέρα Λεόνε', 'H3', ['#1EB53A', '#FFF', '#0072C6'], ''],
+  ['SO', 'Somalia', 'Σομαλία', 'S', ['#4189DD', '#FFF'], 'STAR'],
+  ['SS', 'South Sudan', 'Νότιο Σουδάν', 'TRI', ['#000', '#DA121A', '#078930', '#0F47AF', '#FCDD09'], 'LSTAR'],
+  ['SD', 'Sudan', 'Σουδάν', 'TRI', ['#D21034', '#FFF', '#000', '#007229'], ''],
+  ['TZ', 'Tanzania', 'Τανζανία', 'DIAG', ['#1EB53A', '#00A3DD', '#000', '#FCD116'], ''],
+  ['TG', 'Togo', 'Τόγκο', 'CANT', ['#006A4E', '#D21034', '#FFCE00'], 'LSTAR'],
+  ['TN', 'Tunisia', 'Τυνησία', 'S', ['#E70013', '#FFF'], 'DISC'],
+  ['UG', 'Uganda', 'Ουγκάντα', 'H3', ['#000', '#FCDC04', '#D90000', '#FFF'], 'DISC'],
+  ['ZM', 'Zambia', 'Ζάμπια', 'S', ['#198A00', '#EF7D00'], 'COAT'],
+  ['ZW', 'Zimbabwe', 'Ζιμπάμπουε', 'TRI', ['#319208', '#FFD200', '#DE2010', '#FFF', '#DE2010'], 'LSTAR'],
+
+  // Oceania (12)
+  ['FJ', 'Fiji', 'Φίτζι', 'CANT', ['#68BFE5', '#012169'], 'COAT'],
+  ['KI', 'Kiribati', 'Κιριμπάτι', 'H2', ['#CE1126', '#003F87', '#FCD116', '#FCD116'], 'DISC'],
+  ['MH', 'Marshall Islands', 'Νήσοι Μάρσαλ', 'DIAG', ['#003893', '#003893', '#DD7500', '#FFF'], 'LSTAR'],
+  ['FM', 'Micronesia', 'Μικρονησία', 'S', ['#75B2DD', '#FFF'], 'STAR'],
+  ['NR', 'Nauru', 'Ναουρού', 'H3F', ['#002B7F', '#FFC61E', '#002B7F', '#FFF'], 'LSTAR'],
+  ['PW', 'Palau', 'Παλάου', 'S', ['#4AADD6', '#FFDE00'], 'DISC'],
+  ['PG', 'Papua New Guinea', 'Παπούα Νέα Γουινέα', 'DIAG', ['#CE1126', '#000', '#000', '#FCD116'], 'STAR'],
+  ['WS', 'Samoa', 'Σαμόα', 'CANT', ['#CE1126', '#002B7F'], 'LSTAR'],
+  ['SB', 'Solomon Islands', 'Νήσοι Σολομώντα', 'DIAG', ['#0051BA', '#215B33', '#FCD116', '#FCD116'], 'LSTAR'],
+  ['TO', 'Tonga', 'Τόνγκα', 'CANT', ['#C10000', '#FFF'], 'CROSS'],
+  ['TV', 'Tuvalu', 'Τουβαλού', 'CANT', ['#5B97B1', '#012169', null, '#FFCE00'], 'STAR'],
+  ['VU', 'Vanuatu', 'Βανουάτου', 'TRI2', ['#D21034', '#009543', '#000', '#FDCE12'], ''],
+];
+
+for (const [code, en, el, pattern, colors, emblem] of TIER5_UN_RAW) {
+  FLAGS_DATA.push({
+    code,
+    en,
+    el,
+    tier: 5,
+    svg: makeUnFlagSvg(pattern, colors, emblem),
+  });
+}

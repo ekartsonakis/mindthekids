@@ -50,6 +50,8 @@ export const TRANSLATIONS = {
       hard: 'Δύσκολο',
       expert: 'Προχωρημένο',
       world: 'Όλος ο Κόσμος',
+      insane: 'Τρελό (ΟΗΕ)',
+      freePlay: '🎹 Ελεύθερο Παιχνίδι',
       make5: 'Φτιάξε το 5',
       make10: 'Φτιάξε το 10',
       make10Hard: 'Δύσκολο 10',
@@ -73,6 +75,7 @@ export const TRANSLATIONS = {
         skill: 'Ακουστική Μνήμη & Ρυθμός',
         watchPrompt: 'Άκουσε προσεκτικά τις νότες της μελωδίας...',
         tapPrompt: 'Παίξε τις ίδιες νότες με τη σειρά για να χτίσεις τη μελωδία!',
+        freePlayPrompt: 'Ελεύθερο παιχνίδι! Παίξε όποια μελωδία θέλεις στο ξυλόφωνο όση ώρα θέλεις!',
         songNames: ['Φεγγαράκι μου λαμπρό', 'Χαρωπά τα δυο μου χέρια', 'Ωδή στη Χαρά'],
       },
       marbleJump: {
@@ -227,6 +230,8 @@ export const TRANSLATIONS = {
       hard: 'Hard',
       expert: 'Expert',
       world: 'World',
+      insane: 'Insane (UN)',
+      freePlay: '🎹 Free Play',
       make5: 'Make 5',
       make10: 'Make 10',
       make10Hard: 'Hard 10',
@@ -250,6 +255,7 @@ export const TRANSLATIONS = {
         skill: 'Musical Memory',
         watchPrompt: 'Listen carefully to the notes of the melody...',
         tapPrompt: 'Play the same notes in order to build the melody!',
+        freePlayPrompt: 'Free Play! Play any melody you want on the xylophone for as long as you like!',
         songNames: ['Twinkle Twinkle Little Star', 'Lightly Row', 'Ode to Joy'],
       },
       marbleJump: {
