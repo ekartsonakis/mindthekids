@@ -67,6 +67,7 @@ let activeScreen = 'home'; // 'home' | 'game' | 'activity'
 let activeCategory = 'all';
 let activeGameId = null;
 let currentCleanup = null;
+let hasPushedSubScreen = false;
 
 function stopCurrentGame() {
   if (typeof currentCleanup === 'function') {
@@ -286,6 +287,33 @@ function goHome() {
   activeScreen = 'home';
   activeGameId = null;
   renderApp();
+  if (hasPushedSubScreen) {
+    hasPushedSubScreen = false;
+    try {
+      window.history.back();
+    } catch {}
+  } else if (window.location.hash) {
+    try {
+      window.history.replaceState({ screen: 'home', gameId: null }, '', window.location.pathname);
+    } catch {}
+  }
+}
+
+function openSubScreen(screen, gameId = null) {
+  stopCurrentGame();
+  activeScreen = screen;
+  activeGameId = gameId;
+  const hash = screen === 'game' && gameId ? `#${gameId}` : '#activity';
+  try {
+    if (hasPushedSubScreen) {
+      window.history.replaceState({ screen, gameId }, '', hash);
+    } else {
+      hasPushedSubScreen = true;
+      window.history.pushState({ screen, gameId }, '', hash);
+    }
+  } catch {}
+  renderApp();
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 function bindHeaderEvents() {
@@ -321,8 +349,7 @@ function bindHeaderEvents() {
   if (actBtn) {
     actBtn.onclick = () => {
       playTap();
-      activeScreen = 'activity';
-      renderApp();
+      openSubScreen('activity', null);
     };
   }
 
@@ -371,17 +398,43 @@ function bindHeaderEvents() {
 
   document.querySelectorAll('.game-card').forEach((card) => {
     card.onclick = () => {
-      activeGameId = card.dataset.game;
-      activeScreen = 'game';
       playTap();
-      renderApp();
+      openSubScreen('game', card.dataset.game);
     };
   });
 }
 
+window.addEventListener('popstate', (e) => {
+  const st = e.state;
+  if (st && st.screen === 'game' && st.gameId && GAMES_CATALOG.some((g) => g.id === st.gameId)) {
+    stopCurrentGame();
+    activeScreen = 'game';
+    activeGameId = st.gameId;
+    hasPushedSubScreen = true;
+    renderApp();
+  } else if (st && st.screen === 'activity') {
+    stopCurrentGame();
+    activeScreen = 'activity';
+    activeGameId = null;
+    hasPushedSubScreen = true;
+    renderApp();
+  } else {
+    hasPushedSubScreen = false;
+    if (activeScreen !== 'home') {
+      stopCurrentGame();
+      activeScreen = 'home';
+      activeGameId = null;
+      renderApp();
+    }
+  }
+});
+
 const initial = getState();
 setTheme(initial.theme);
 setLang(initial.lang);
+try {
+  window.history.replaceState({ screen: 'home', gameId: null }, '', window.location.pathname);
+} catch {}
 renderApp();
 
 if ('serviceWorker' in navigator) {
