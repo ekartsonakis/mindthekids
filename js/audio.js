@@ -191,6 +191,36 @@ export function speakFlagPrompt(code, fallbackText, lang = 'el') {
   fallbackWebSpeech(fallbackText, safeLang);
 }
 
+/**
+ * Speaks ONLY the geographic region or country name for the Geography Map game
+ * using pre-bundled offline MP3 files (/audio/geo-{lang}/{code}.mp3 or /audio/{lang}/{code}.mp3).
+ */
+export function speakGeoPrompt(code, isGreekRegion, fallbackText, lang = 'el') {
+  if (getState().muted) return;
+  stopSpokenAudio();
+
+  const safeLang = lang === 'en' ? 'en' : 'el';
+  if (code) {
+    try {
+      const folder = isGreekRegion ? `geo-${safeLang}` : safeLang;
+      const audio = new Audio(`/audio/${folder}/${code}.mp3`);
+      audio.volume = 0.88;
+      currentAudioEl = audio;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          fallbackWebSpeech(fallbackText, safeLang);
+        });
+      }
+      return;
+    } catch {
+      // Fall through
+    }
+  }
+
+  fallbackWebSpeech(fallbackText, safeLang);
+}
+
 function fallbackWebSpeech(text, lang) {
   if (!('speechSynthesis' in window) || !text) return;
   try {

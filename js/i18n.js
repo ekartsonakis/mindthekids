@@ -27,8 +27,8 @@ export const TRANSLATIONS = {
         {
           icon: '🧠',
           color: 'indigo',
-          title: '19 Παιχνίδια Μυαλού',
-          sub: 'Μνήμη, Λογική, Προσοχή, Μουσική & Αριθμοί',
+          title: '20 Παιχνίδια Μυαλού',
+          sub: 'Μνήμη, Λογική, Προσοχή, Μουσική, Αριθμοί & Γεωγραφία',
         },
         {
           icon: '🌿',
@@ -64,7 +64,7 @@ export const TRANSLATIONS = {
         {
           icon: '✈️',
           title: 'Πώς λειτουργεί σε Airplane Mode;',
-          text: 'Μόλις ανοίξετε το <strong>MindTheKids</strong> μία φορά, όλα τα 19 παιχνίδια και οι φωνητικές οδηγίες αποθηκεύονται αυτόματα στη συσκευή. Έτσι μπορείτε να κλείσετε εντελώς το Wi-Fi/Δεδομένα πριν δώσετε το κινητό ή το tablet στο παιδί.',
+          text: 'Μόλις ανοίξετε το <strong>MindTheKids</strong> μία φορά, όλα τα 20 παιχνίδια και οι φωνητικές οδηγίες αποθηκεύονται αυτόματα στη συσκευή. Έτσι μπορείτε να κλείσετε εντελώς το Wi-Fi/Δεδομένα πριν δώσετε το κινητό ή το tablet στο παιδί.',
         },
         {
           icon: '🔒',
@@ -89,6 +89,12 @@ export const TRANSLATIONS = {
       medium: 'Μεσαίο',
       hard: 'Δύσκολο',
       expert: 'Προχωρημένο',
+      eu: 'Ευρωπαϊκή Ένωση',
+      majorWorld: 'Μεγάλες Χώρες',
+      unAll: 'ΟΗΕ',
+      greece: '🇬🇷 Ελλάδα',
+      europe: '🇪🇺 Ευρώπη',
+      worldMap: '🌍 Κόσμος',
       world: 'Όλος ο Κόσμος',
       insane: 'Τρελό (ΟΗΕ)',
       freePlay: '🎹 Ελεύθερο Παιχνίδι',
@@ -214,7 +220,14 @@ export const TRANSLATIONS = {
       mazeExplorer: {
         title: 'Ο Μικρός Λαβύρινθος',
         skill: 'Προσανατολισμός & Σχεδιασμός',
-        prompt: 'Οδήγησε το ζωάκι μέσα από τον λαβύρινθο στον στόχο του!',
+        prompt: 'Οδήγησε το ζωάκι στον στόχο του αποφεύγοντας τα εμπόδια!',
+        keyNeeded: '🔑 Πάρε πρώτα το κλειδί για να ανοίξεις την κλειδωμένη πύλη 🔒!',
+        keyGot: '🔓 Πήρες το κλειδί! Η πύλη άνοιξε!',
+      },
+      geographyMap: {
+        title: 'Χάρτης & Γεωγραφία',
+        skill: 'Γεωγραφία & Χώρος',
+        prompt: 'Βρες πάνω στον χάρτη:',
       },
     },
   },
@@ -247,8 +260,8 @@ export const TRANSLATIONS = {
         {
           icon: '🧠',
           color: 'indigo',
-          title: '19 Brain Games',
-          sub: 'Memory, Logic, Focus, Music & Math',
+          title: '20 Brain Games',
+          sub: 'Memory, Logic, Focus, Music, Math & Geography',
         },
         {
           icon: '🌿',
@@ -284,7 +297,7 @@ export const TRANSLATIONS = {
         {
           icon: '✈️',
           title: 'How Airplane Mode works',
-          text: 'Once you open <strong>MindTheKids</strong> a single time, all 19 games and voice instructions are cached automatically on your device — so you can turn off Wi-Fi and mobile data completely before handing the device to your child.',
+          text: 'Once you open <strong>MindTheKids</strong> a single time, all 20 games and voice instructions are cached automatically on your device — so you can turn off Wi-Fi and mobile data completely before handing the device to your child.',
         },
         {
           icon: '🔒',
@@ -309,6 +322,12 @@ export const TRANSLATIONS = {
       medium: 'Medium',
       hard: 'Hard',
       expert: 'Expert',
+      eu: 'European Union',
+      majorWorld: 'Major Countries',
+      unAll: 'UN',
+      greece: '🇬🇷 Greece',
+      europe: '🇪🇺 Europe',
+      worldMap: '🌍 World',
       world: 'World',
       insane: 'Insane (UN)',
       freePlay: '🎹 Free Play',
@@ -434,7 +453,14 @@ export const TRANSLATIONS = {
       mazeExplorer: {
         title: 'Little Maze',
         skill: 'Spatial Planning',
-        prompt: 'Guide the little friend through the maze to reach its goal!',
+        prompt: 'Guide the little friend to its goal while avoiding obstacles!',
+        keyNeeded: '🔑 Pick up the key first to unlock the gate 🔒!',
+        keyGot: '🔓 You got the key! The gate is now open!',
+      },
+      geographyMap: {
+        title: 'Map & Geography',
+        skill: 'Geography & Space',
+        prompt: 'Find on the map:',
       },
     },
   },

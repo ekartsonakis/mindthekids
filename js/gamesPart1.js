@@ -1529,10 +1529,10 @@ export function renderSequenceMemory(stage, { t, onWin }) {
 }
 
 // ============================================================================
-// 10. FLAGS OF THE WORLD (5 Levels including Insane 193 UN Member States + Offline MP3 Voice!)
+// 10. FLAGS OF THE WORLD (Easy 12, European Union 27, Major World 75, UN 193 — Real Official SVG Flags!)
 // ============================================================================
 export function renderFlagsWorld(stage, { t, lang, onWin }) {
-  let level = 'easy'; // 'easy' (12) | 'medium' (24) | 'hard' (36) | 'world' (48) | 'insane' (193 UN Countries)
+  let level = 'easy'; // 'easy' (12) | 'eu' (27 EU) | 'major' (75 Major World) | 'un' (193 UN Countries)
   let round = 0;
   let currentTarget = null;
   let options = [];
@@ -1540,14 +1540,13 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
   let usedCodes = new Set();
 
   function getTotalRounds() {
-    return level === 'easy' ? 6 : level === 'medium' ? 8 : level === 'hard' ? 10 : level === 'world' ? 12 : 16;
+    return level === 'easy' ? 6 : level === 'eu' ? 10 : level === 'major' ? 12 : 16;
   }
 
   function getPool() {
-    if (level === 'easy') return FLAGS_DATA.filter((f) => f.tier === 1);
-    if (level === 'medium') return FLAGS_DATA.filter((f) => f.tier <= 2);
-    if (level === 'hard') return FLAGS_DATA.filter((f) => f.tier <= 3);
-    if (level === 'world') return FLAGS_DATA.filter((f) => f.tier <= 4);
+    if (level === 'easy') return FLAGS_DATA.filter((f) => f.isEasy);
+    if (level === 'eu') return FLAGS_DATA.filter((f) => f.isEU);
+    if (level === 'major') return FLAGS_DATA.filter((f) => f.isMajor);
     return FLAGS_DATA; // All 193 UN Member States!
   }
 
@@ -1564,13 +1563,6 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
 
     // Pick a target country not yet asked in this session
     let candidates = pool.filter((f) => !usedCodes.has(f.code));
-    if (level === 'world') {
-      const globalCandidates = candidates.filter((f) => f.tier >= 3 && f.tier <= 4);
-      if (globalCandidates.length > 0) candidates = globalCandidates;
-    } else if (level === 'insane') {
-      const insaneCandidates = candidates.filter((f) => f.tier >= 4);
-      if (insaneCandidates.length > 0 && Math.random() < 0.8) candidates = insaneCandidates;
-    }
     if (candidates.length === 0) {
       usedCodes.clear();
       candidates = pool;
@@ -1589,13 +1581,17 @@ export function renderFlagsWorld(stage, { t, lang, onWin }) {
   function draw() {
     const countryName = lang === 'el' ? currentTarget.el : currentTarget.en;
     const totalRounds = getTotalRounds();
+    const easyCount = FLAGS_DATA.filter((f) => f.isEasy).length;
+    const euCount = FLAGS_DATA.filter((f) => f.isEU).length;
+    const majorCount = FLAGS_DATA.filter((f) => f.isMajor).length;
+    const unCount = FLAGS_DATA.length;
+
     stage.innerHTML = `
       <div class="level-selector">
-        <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy} (12)</button>
-        <button class="level-btn ${level === 'medium' ? 'active' : ''}" data-lvl="medium">${t.levels.medium} (24)</button>
-        <button class="level-btn ${level === 'hard' ? 'active' : ''}" data-lvl="hard">${t.levels.hard} (36)</button>
-        <button class="level-btn ${level === 'world' ? 'active' : ''}" data-lvl="world">🌍 ${t.levels.world} (48)</button>
-        <button class="level-btn ${level === 'insane' ? 'active' : ''}" data-lvl="insane">🔥 ${t.levels.insane} (${FLAGS_DATA.length})</button>
+        <button class="level-btn ${level === 'easy' ? 'active' : ''}" data-lvl="easy">${t.levels.easy} (${easyCount})</button>
+        <button class="level-btn ${level === 'eu' ? 'active' : ''}" data-lvl="eu">🇪🇺 ${t.levels.eu} (${euCount})</button>
+        <button class="level-btn ${level === 'major' ? 'active' : ''}" data-lvl="major">🌍 ${t.levels.majorWorld} (${majorCount})</button>
+        <button class="level-btn ${level === 'un' ? 'active' : ''}" data-lvl="un">🇺🇳 ${t.levels.unAll} (${unCount})</button>
       </div>
       <div class="game-prompt">
         <span>${t.games.flagsWorld.prompt} <strong>${countryName}</strong> (${round + 1}/${totalRounds})</span>

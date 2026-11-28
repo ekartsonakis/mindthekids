@@ -1,4 +1,5 @@
-import { playTap, playSuccess, playGentleWrong, playMelodyNote } from './audio.js';
+import { playTap, playSuccess, playGentleWrong, playMelodyNote, speakGeoPrompt } from './audio.js';
+import { GREECE_MAP_DATA, EUROPE_MAP_DATA, WORLD_MAP_DATA } from './geoData.js';
 
 function shuffle(arr) {
   const a = [...arr];
@@ -1259,58 +1260,206 @@ export function renderMelodyMemory(stage, { t, lang, onWin }) {
 }
 
 // ============================================================================
-// 19. MAZE EXPLORER (Ο Μικρός Λαβύρινθος — 4 Levels, Tap/Drag/DPad/Keyboard)
+// 19. MAZE EXPLORER (Ο Μικρός Λαβύρινθος — High-Branching Labyrinth + Roadblocks & Key/Gate!)
 // ============================================================================
 export function renderMazeExplorer(stage, { t, onWin }) {
   const THEMES = [
-    { hero: '🐰', goal: '🥕' },
-    { hero: '🐝', goal: '🌻' },
-    { hero: '🐶', goal: '🦴' },
-    { hero: '🐸', goal: '🪷' },
-    { hero: '🚀', goal: '🪐' },
+    { hero: '🐰', goal: '🥕', obs: '🪨' },
+    { hero: '🐝', goal: '🌻', obs: '🚧' },
+    { hero: '🐶', goal: '🦴', obs: '🪨' },
+    { hero: '🐸', goal: '🪷', obs: '🪵' },
+    { hero: '🚀', goal: '🪐', obs: '☄️' },
   ];
 
-  let level = 'easy'; // easy (7x7), medium (9x9), hard (11x11), expert (13x13)
+  // Larger, much more intricate grids as difficulty increases
+  // easy: 9x9, medium: 13x13, hard: 15x15, expert: 19x19
+  let level = 'easy';
   let round = 0;
   const totalRounds = 3;
-  let maze = []; // 0 = path, 1 = wall
+  // Cell codes: 0 = open path, 1 = wall, 2 = roadblock obstacle (🪨/🚧), 3 = locked gate (🔒), 4 = key (🔑)
+  let maze = [];
   let visited = [];
-  let gridSize = 7;
+  let gridSize = 9;
   let player = { r: 1, c: 1 };
-  let goal = { r: 5, c: 5 };
+  let goal = { r: 7, c: 7 };
+  let gatePos = null;
+  let hasKey = true;
+  let statusBanner = '';
   let theme = THEMES[0];
   let isDragging = false;
   let solved = false;
 
+  // BFS shortest path on open cells (0) between two coordinates
+  function bfsPath(grid, sr, sc, tr, tc) {
+    const sz = grid.length;
+    const q = [[sr, sc]];
+    const parent = new Map();
+    const startKey = `${sr},${sc}`;
+    parent.set(startKey, null);
+    const dirs = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ];
+
+    while (q.length > 0) {
+      const [r, c] = q.shift();
+      if (r === tr && c === tc) {
+        const path = [];
+        let cur = `${tr},${tc}`;
+        while (cur) {
+          const [pr, pc] = cur.split(',').map(Number);
+          path.push({ r: pr, c: pc });
+          cur = parent.get(cur);
+        }
+        return path.reverse();
+      }
+      for (const [dr, dc] of dirs) {
+        const nr = r + dr;
+        const nc = c + dc;
+        const k = `${nr},${nc}`;
+        if (nr > 0 && nr < sz - 1 && nc > 0 && nc < sz - 1 && grid[nr][nc] === 0 && !parent.has(k)) {
+          parent.set(k, `${r},${c}`);
+          q.push([nr, nc]);
+        }
+      }
+    }
+    return [];
+  }
+
+  /**
+   * Generates a complex, deceptive labyrinth using a Growing-Tree hybrid
+   * (mixing Prim's random frontier branching with DFS), then opens deceptive
+   * shortcut corridors blocked by obstacles (🪨/🚧) and adds a Key (🔑) & Locked Gate (🔒).
+   */
   function generateMaze(rooms) {
     const sz = rooms * 2 + 1;
     const grid = Array.from({ length: sz }, () => Array.from({ length: sz }, () => 1));
+    const dirs = [
+      [-2, 0],
+      [2, 0],
+      [0, -2],
+      [0, 2],
+    ];
 
-    function carve(r, c) {
-      grid[r][c] = 0;
-      const dirs = shuffle([
-        [-2, 0],
-        [2, 0],
-        [0, -2],
-        [0, 2],
-      ]);
+    // Growing-Tree algorithm: 45% random active cell (Prim's high branching) + 55% newest cell
+    const active = [[1, 1]];
+    grid[1][1] = 0;
+
+    while (active.length > 0) {
+      const pickIdx =
+        Math.random() < 0.45 ? Math.floor(Math.random() * active.length) : active.length - 1;
+      const [r, c] = active[pickIdx];
+      const neighbors = [];
       for (const [dr, dc] of dirs) {
         const nr = r + dr;
         const nc = c + dc;
         if (nr > 0 && nr < sz - 1 && nc > 0 && nc < sz - 1 && grid[nr][nc] === 1) {
-          grid[r + dr / 2][c + dc / 2] = 0;
-          carve(nr, nc);
+          neighbors.push([nr, nc, r + dr / 2, c + dc / 2]);
+        }
+      }
+      if (neighbors.length > 0) {
+        const [nr, nc, wr, wc] = neighbors[Math.floor(Math.random() * neighbors.length)];
+        grid[wr][wc] = 0;
+        grid[nr][nc] = 0;
+        active.push([nr, nc]);
+      } else {
+        active.splice(pickIdx, 1);
+      }
+    }
+
+    const goalR = sz - 2;
+    const goalC = sz - 2;
+    const solPath = bfsPath(grid, 1, 1, goalR, goalC);
+    const solSet = new Set(solPath.map((p) => `${p.r},${p.c}`));
+
+    gatePos = null;
+    hasKey = true;
+
+    // In Medium, Hard, and Expert: place a Locked Gate (🔒) on the solution path
+    // and hide a Key (🔑) in a side-branch reachable BEFORE the gate!
+    if (level !== 'easy' && solPath.length >= 8) {
+      const gateIdx = Math.floor(solPath.length * 0.65);
+      const gCell = solPath[gateIdx];
+
+      // Find all cells reachable from (1,1) if gCell is blocked
+      const reachQ = [[1, 1]];
+      const reachDist = new Map([['1,1', 0]]);
+      const stepDirs = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1],
+      ];
+      let bestKeyCell = null;
+      let bestScore = -1;
+
+      while (reachQ.length > 0) {
+        const [cr, cc] = reachQ.shift();
+        const curKey = `${cr},${cc}`;
+        const d = reachDist.get(curKey);
+        if (!solSet.has(curKey) && (cr !== 1 || cc !== 1)) {
+          if (d > bestScore) {
+            bestScore = d;
+            bestKeyCell = { r: cr, c: cc };
+          }
+        }
+        for (const [dr, dc] of stepDirs) {
+          const nr = cr + dr;
+          const nc = cc + dc;
+          const nk = `${nr},${nc}`;
+          if (
+            nr > 0 &&
+            nr < sz - 1 &&
+            nc > 0 &&
+            nc < sz - 1 &&
+            grid[nr][nc] === 0 &&
+            !(nr === gCell.r && nc === gCell.c) &&
+            !reachDist.has(nk)
+          ) {
+            reachDist.set(nk, d + 1);
+            reachQ.push([nr, nc]);
+          }
+        }
+      }
+
+      if (bestKeyCell) {
+        grid[gCell.r][gCell.c] = 3; // Locked gate 🔒
+        grid[bestKeyCell.r][bestKeyCell.c] = 4; // Key 🔑
+        gatePos = { r: gCell.r, c: gCell.c };
+        hasKey = false;
+      }
+    }
+
+    // Place deceptive roadblock obstacles (cell = 2) on internal walls that connect two open corridors!
+    // Visually these look like connecting passages blocked by boulders/barriers (🪨 / 🚧)
+    const candidateWalls = [];
+    for (let r = 2; r < sz - 2; r++) {
+      for (let c = 2; c < sz - 2; c++) {
+        if (grid[r][c] !== 1) continue;
+        const vertConnect = grid[r - 1][c] === 0 && grid[r + 1][c] === 0;
+        const horizConnect = grid[r][c - 1] === 0 && grid[r][c + 1] === 0;
+        if (vertConnect || horizConnect) {
+          candidateWalls.push({ r, c });
         }
       }
     }
 
-    carve(1, 1);
+    const obstacleCount =
+      level === 'easy' ? 2 : level === 'medium' ? 5 : level === 'hard' ? 8 : 13;
+    const pickedObstacles = shuffle(candidateWalls).slice(0, obstacleCount);
+    for (const obs of pickedObstacles) {
+      grid[obs.r][obs.c] = 2; // Roadblock obstacle closing off that shortcut!
+    }
+
     return grid;
   }
 
   function initRound() {
     solved = false;
-    const rooms = level === 'easy' ? 3 : level === 'medium' ? 4 : level === 'hard' ? 5 : 6;
+    statusBanner = '';
+    const rooms = level === 'easy' ? 4 : level === 'medium' ? 6 : level === 'hard' ? 7 : 9;
     gridSize = rooms * 2 + 1;
     maze = generateMaze(rooms);
     visited = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => false));
@@ -1321,14 +1470,45 @@ export function renderMazeExplorer(stage, { t, onWin }) {
     draw();
   }
 
+  function canEnterCell(r, c) {
+    if (r < 0 || r >= gridSize || c < 0 || c >= gridSize) return false;
+    const val = maze[r][c];
+    if (val === 0 || val === 4) return true;
+    if (val === 3 && hasKey) return true;
+    return false;
+  }
+
   function tryStep(dr, dc) {
     if (solved) return false;
     const nr = player.r + dr;
     const nc = player.c + dc;
-    if (nr >= 0 && nr < gridSize && nc >= 0 && nc < gridSize && maze[nr][nc] === 0) {
+    if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridSize) return false;
+
+    const val = maze[nr][nc];
+    if (val === 2) {
+      // Blocked by obstacle
+      playGentleWrong();
+      return false;
+    }
+    if (val === 3 && !hasKey) {
+      statusBanner = t.games.mazeExplorer.keyNeeded;
+      playGentleWrong();
+      draw();
+      return false;
+    }
+
+    if (canEnterCell(nr, nc)) {
       player = { r: nr, c: nc };
       visited[nr][nc] = true;
-      playTap();
+      if (val === 4) {
+        hasKey = true;
+        maze[nr][nc] = 0;
+        if (gatePos) maze[gatePos.r][gatePos.c] = 0;
+        statusBanner = t.games.mazeExplorer.keyGot;
+        playSuccess();
+      } else {
+        playTap();
+      }
       draw();
       checkWin();
       return true;
@@ -1338,7 +1518,14 @@ export function renderMazeExplorer(stage, { t, onWin }) {
 
   function tryMoveToCell(tr, tc) {
     if (solved) return;
-    if (maze[tr]?.[tc] !== 0) return;
+    if (maze[tr]?.[tc] === 3 && !hasKey && Math.abs(tr - player.r) + Math.abs(tc - player.c) === 1) {
+      tryStep(tr - player.r, tc - player.c);
+      return;
+    }
+    if (!canEnterCell(tr, tc)) {
+      if (maze[tr]?.[tc] === 2) playGentleWrong();
+      return;
+    }
 
     // Direct neighbor
     if (Math.abs(tr - player.r) + Math.abs(tc - player.c) === 1) {
@@ -1346,31 +1533,23 @@ export function renderMazeExplorer(stage, { t, onWin }) {
       return;
     }
 
-    // Straight line corridor tap (same row or same column with no walls in between)
+    // Straight line corridor tap (same row or same column with no walls/obstacles in between)
     if (tr === player.r && tc !== player.c) {
       const step = tc > player.c ? 1 : -1;
       for (let c = player.c + step; c !== tc + step; c += step) {
-        if (maze[player.r][c] === 1) return;
+        if (!canEnterCell(player.r, c)) return;
       }
       for (let c = player.c + step; c !== tc + step; c += step) {
-        visited[player.r][c] = true;
+        tryStep(0, step);
       }
-      player = { r: tr, c: tc };
-      playTap();
-      draw();
-      checkWin();
     } else if (tc === player.c && tr !== player.r) {
       const step = tr > player.r ? 1 : -1;
       for (let r = player.r + step; r !== tr + step; r += step) {
-        if (maze[r][player.c] === 1) return;
+        if (!canEnterCell(r, player.c)) return;
       }
       for (let r = player.r + step; r !== tr + step; r += step) {
-        visited[r][player.c] = true;
+        tryStep(step, 0);
       }
-      player = { r: tr, c: tc };
-      playTap();
-      draw();
-      checkWin();
     }
   }
 
@@ -1403,7 +1582,16 @@ export function renderMazeExplorer(stage, { t, onWin }) {
   }
 
   function draw() {
-    const fontPx = gridSize <= 7 ? 'clamp(1rem, 4.5vw, 1.45rem)' : gridSize <= 9 ? 'clamp(0.85rem, 3.8vw, 1.2rem)' : gridSize <= 11 ? 'clamp(0.75rem, 3.1vw, 1rem)' : 'clamp(0.65rem, 2.6vw, 0.85rem)';
+    const fontPx =
+      gridSize <= 9
+        ? 'clamp(0.85rem, 3.6vw, 1.25rem)'
+        : gridSize <= 13
+        ? 'clamp(0.7rem, 2.7vw, 0.98rem)'
+        : gridSize <= 15
+        ? 'clamp(0.6rem, 2.3vw, 0.85rem)'
+        : 'clamp(0.5rem, 1.9vw, 0.72rem)';
+    // In Hard & Expert, keep visited cells subtle so the path isn't trivially highlighted
+    const showTrailHighlight = level === 'easy' || level === 'medium';
 
     stage.innerHTML = `
       <div class="level-selector">
@@ -1413,7 +1601,7 @@ export function renderMazeExplorer(stage, { t, onWin }) {
         <button class="level-btn ${level === 'expert' ? 'active' : ''}" data-lvl="expert">${t.levels.expert}</button>
       </div>
       <div class="game-prompt">
-        <span>${t.games.mazeExplorer.prompt}</span>
+        <span>${statusBanner || t.games.mazeExplorer.prompt}</span>
         <strong>(${round + 1}/${totalRounds})</strong>
       </div>
       <div class="maze-board" id="maze-board" style="grid-template-columns: repeat(${gridSize}, 1fr);">
@@ -1424,13 +1612,40 @@ export function renderMazeExplorer(stage, { t, onWin }) {
                 const isPlayer = player.r === r && player.c === c;
                 const isGoal = goal.r === r && goal.c === c;
                 const isVis = visited[r][c];
+                const isObs = cell === 2;
+                const isGate = cell === 3;
+                const isKey = cell === 4;
+                const cellClass =
+                  cell === 1
+                    ? 'wall'
+                    : isObs
+                    ? 'path obstacle'
+                    : isGate
+                    ? 'path gate-cell'
+                    : isKey
+                    ? 'path key-cell'
+                    : 'path';
                 return `
-                  <div class="maze-cell ${cell === 1 ? 'wall' : 'path'} ${isVis && cell === 0 ? 'visited' : ''} ${
+                  <div class="maze-cell ${cellClass} ${isVis && showTrailHighlight && cell === 0 ? 'visited' : ''} ${
                   isGoal ? 'goal-cell' : ''
                 }"
                     data-r="${r}" data-c="${c}"
                     style="font-size:${fontPx};">
-                    ${isPlayer ? theme.hero : isGoal ? theme.goal : isVis && cell === 0 ? '·' : ''}
+                    ${
+                      isPlayer
+                        ? theme.hero
+                        : isGoal
+                        ? theme.goal
+                        : isKey
+                        ? '🔑'
+                        : isGate
+                        ? '🔒'
+                        : isObs
+                        ? theme.obs
+                        : isVis && showTrailHighlight && cell === 0
+                        ? '·'
+                        : ''
+                    }
                   </div>
                 `;
               })
@@ -1504,4 +1719,172 @@ export function renderMazeExplorer(stage, { t, onWin }) {
   return () => {
     window.removeEventListener('keydown', handleKeyDown);
   };
+}
+
+// ============================================================================
+// 20. GEOGRAPHY MAP EXPLORER (Ελλάδα, Ευρώπη, Κόσμος — Interactive Vector Map + Spoken Voice!)
+// ============================================================================
+export function renderGeographyMap(stage, { t, lang, onWin }) {
+  let level = 'greece'; // 'greece' | 'europe' | 'world'
+  let round = 0;
+  let currentTarget = null;
+  let candidates = []; // 4 candidate regions/countries highlighted on the map with pins 1..4
+  let locked = false;
+  let usedCodes = new Set();
+
+  function getMapObj() {
+    if (level === 'greece') return GREECE_MAP_DATA;
+    if (level === 'europe') return EUROPE_MAP_DATA;
+    return WORLD_MAP_DATA;
+  }
+
+  function getTotalRounds() {
+    return level === 'greece' ? 8 : level === 'europe' ? 10 : 12;
+  }
+
+  function speakCurrent() {
+    if (!currentTarget) return;
+    const name = lang === 'el' ? currentTarget.el : currentTarget.en;
+    speakGeoPrompt(currentTarget.code, level === 'greece', name, lang);
+  }
+
+  function nextQuestion() {
+    locked = false;
+    const mapObj = getMapObj();
+    const playablePool = mapObj.features.filter((f) => f.playable);
+
+    let fresh = playablePool.filter((f) => !usedCodes.has(f.code));
+    if (fresh.length === 0) {
+      usedCodes.clear();
+      fresh = playablePool;
+    }
+
+    currentTarget = fresh[Math.floor(Math.random() * fresh.length)];
+    usedCodes.add(currentTarget.code);
+
+    // Pick 3 distractors that are spatially separated from the target so pins don't overlap
+    const others = shuffle(playablePool.filter((f) => f.code !== currentTarget.code));
+    const chosen = [currentTarget];
+    const minDist = level === 'world' ? 55 : 42;
+
+    for (const cand of others) {
+      if (chosen.length >= 4) break;
+      const farEnough = chosen.every((c) => Math.hypot(c.cx - cand.cx, c.cy - cand.cy) >= minDist);
+      if (farEnough) chosen.push(cand);
+    }
+    for (const cand of others) {
+      if (chosen.length >= 4) break;
+      if (!chosen.includes(cand)) chosen.push(cand);
+    }
+
+    candidates = shuffle(chosen).map((f, idx) => ({
+      ...f,
+      pinNum: idx + 1,
+      status: '',
+    }));
+
+    draw();
+    setTimeout(speakCurrent, 180);
+  }
+
+  function handleSelectCandidate(code) {
+    if (locked) return;
+    const opt = candidates.find((c) => c.code === code);
+    if (!opt) return;
+
+    if (opt.code === currentTarget.code) {
+      locked = true;
+      opt.status = 'correct';
+      playSuccess();
+      draw();
+      setTimeout(() => {
+        round++;
+        if (round >= getTotalRounds()) onWin();
+        else nextQuestion();
+      }, 750);
+    } else {
+      opt.status = 'wrong';
+      playGentleWrong();
+      draw();
+    }
+  }
+
+  function draw() {
+    const mapObj = getMapObj();
+    const targetName = lang === 'el' ? currentTarget.el : currentTarget.en;
+    const totalRounds = getTotalRounds();
+    const candidateMap = new Map(candidates.map((c) => [c.code, c]));
+    const pinR = level === 'world' ? 16 : 13;
+    const pinFont = level === 'world' ? 14 : 11.5;
+
+    stage.innerHTML = `
+      <div class="level-selector">
+        <button class="level-btn ${level === 'greece' ? 'active' : ''}" data-lvl="greece">${t.levels.greece}</button>
+        <button class="level-btn ${level === 'europe' ? 'active' : ''}" data-lvl="europe">${t.levels.europe}</button>
+        <button class="level-btn ${level === 'world' ? 'active' : ''}" data-lvl="world">${t.levels.worldMap}</button>
+      </div>
+      <div class="game-prompt">
+        <span>${t.games.geographyMap.prompt} <strong>${targetName}</strong> (${round + 1}/${totalRounds})</span>
+        <button class="speak-big-btn" id="geo-speak-btn">${t.listen}</button>
+      </div>
+      <div class="geo-map-wrap">
+        <svg viewBox="${mapObj.viewBox}" class="geo-svg">
+          <!-- Landmass polygons -->
+          ${mapObj.features
+            .map((f) => {
+              const cand = candidateMap.get(f.code);
+              const cls = cand ? `geo-land candidate ${cand.status}` : 'geo-land';
+              return `<path d="${f.d}" class="${cls}" data-code="${cand ? f.code : ''}" />`;
+            })
+            .join('')}
+
+          <!-- Numbered pins on the 4 candidate regions/countries -->
+          ${candidates
+            .map(
+              (c) => `
+            <g class="geo-pin-group ${c.status}" data-code="${c.code}" transform="translate(${c.cx}, ${c.cy})">
+              <circle r="${pinR}" class="geo-pin-circle" />
+              <text y="${pinFont * 0.36}" text-anchor="middle" font-size="${pinFont}" font-weight="900" class="geo-pin-text">${c.pinNum}</text>
+            </g>
+          `
+            )
+            .join('')}
+        </svg>
+      </div>
+      <div class="geo-pin-bar">
+        ${candidates
+          .map(
+            (c) => `
+          <button class="geo-pin-btn ${c.status}" data-code="${c.code}">
+            <span class="geo-pin-badge">${c.pinNum}</span>
+          </button>
+        `
+          )
+          .join('')}
+      </div>
+    `;
+
+    stage.querySelectorAll('.level-btn').forEach((btn) => {
+      btn.onclick = () => {
+        level = btn.dataset.lvl;
+        round = 0;
+        usedCodes.clear();
+        nextQuestion();
+      };
+    });
+
+    const speakBtn = stage.querySelector('#geo-speak-btn');
+    if (speakBtn) {
+      speakBtn.onclick = () => speakCurrent();
+    }
+
+    stage.querySelectorAll('[data-code]').forEach((el) => {
+      const code = el.getAttribute('data-code');
+      if (code) {
+        el.onclick = () => handleSelectCandidate(code);
+      }
+    });
+  }
+
+  nextQuestion();
 }

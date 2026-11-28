@@ -30,6 +30,7 @@ import {
   renderPatternCopy,
   renderMelodyMemory,
   renderMazeExplorer,
+  renderGeographyMap,
 } from './gamesPart2.js';
 
 const GAMES_CATALOG = [
@@ -57,6 +58,7 @@ const GAMES_CATALOG = [
   { id: 'towerHanoi', icon: '🌈', theme: 'indigo', bg: 'var(--accent-primary-soft)', category: 'logic', render: renderTowerHanoi },
 
   // Shapes & Space
+  { id: 'geographyMap', icon: '🗺️', theme: 'teal', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderGeographyMap },
   { id: 'mazeExplorer', icon: '🧭', theme: 'amber', bg: 'var(--accent-amber-soft)', category: 'spatial', render: renderMazeExplorer },
   { id: 'mentalRotation', icon: '🔄', theme: 'teal', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderMentalRotation },
   { id: 'shapeSorting', icon: '🧺', theme: 'teal', bg: 'var(--accent-teal-soft)', category: 'spatial', render: renderShapeSorting },
@@ -209,24 +211,25 @@ function renderApp() {
             </div>
 
             <div class="infographic-right">
-              <div class="infographic-header">
-                <h2 class="infographic-title">🌱 ${t.intro.title}</h2>
-                <a href="#parent-guide-bottom" class="infographic-more-link">${t.intro.moreLink}</a>
-              </div>
-              <div class="infographic-nodes">
-                ${t.intro.nodes
-                  .map(
-                    (n) => `
-                  <div class="info-node" data-card-theme="${n.color}">
-                    <div class="info-node-icon">${n.icon}</div>
-                    <div class="info-node-text">
-                      <div class="info-node-title">${n.title}</div>
-                      <div class="info-node-sub">${n.sub}</div>
-                    </div>
-                  </div>
-                `
-                  )
-                  .join('')}
+              <div class="infographic-text-panel">
+                <div class="infographic-header">
+                  <h2 class="infographic-title">🌱 ${t.intro.title}</h2>
+                </div>
+                <ul class="infographic-list">
+                  ${t.intro.nodes
+                    .map(
+                      (n) => `
+                    <li class="infographic-list-item">
+                      <span class="infographic-bullet-icon">${n.icon}</span>
+                      <span><strong>${n.title}:</strong> ${n.sub}</span>
+                    </li>
+                  `
+                    )
+                    .join('')}
+                </ul>
+                <div class="infographic-footer-row">
+                  <a href="#parent-guide-bottom" class="infographic-more-link">${t.intro.moreLink}</a>
+                </div>
               </div>
             </div>
           </div>

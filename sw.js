@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mindthekids-cache-v12';
+const CACHE_NAME = 'mindthekids-cache-v13';
 
 const FLAG_CODES = [
   'GR', 'CY', 'IT', 'FR', 'DE', 'JP', 'GB', 'US', 'BR', 'ES', 'CH', 'SE',
@@ -20,12 +20,18 @@ const FLAG_CODES = [
   'VU',
 ];
 
+const GREECE_REGION_IDS = [
+  'attica', 'peloponnese', 'crete', 'macedonia', 'thessaly', 'epirus',
+  'thrace', 'central_greece', 'ionian', 'cyclades', 'dodecanese',
+  'north_aegean', 'evia',
+];
+
 const GAME_IDS = [
   'memoryPairs', 'sequenceMemory', 'melodyMemory', 'flagsWorld',
   'targetTap', 'whackAMole', 'schulteTable', 'emojiMahjong',
   'numberMatch', 'visualMath', 'colorSudoku', 'marbleJump',
   'patternTrain', 'oddOneOut', 'towerHanoi', 'mazeExplorer',
-  'mentalRotation', 'shapeSorting', 'patternCopy',
+  'mentalRotation', 'shapeSorting', 'patternCopy', 'geographyMap',
 ];
 
 const PRECACHE_ASSETS = [
@@ -39,10 +45,14 @@ const PRECACHE_ASSETS = [
   '/js/audio.js',
   '/js/storage.js',
   '/js/flagsData.js',
+  '/js/geoData.js',
   '/js/gamesPart1.js',
   '/js/gamesPart2.js',
+  ...FLAG_CODES.map((c) => `/icons/flags/${c}.svg`),
   ...FLAG_CODES.map((c) => `/audio/el/${c}.mp3`),
   ...FLAG_CODES.map((c) => `/audio/en/${c}.mp3`),
+  ...GREECE_REGION_IDS.map((r) => `/audio/geo-el/${r}.mp3`),
+  ...GREECE_REGION_IDS.map((r) => `/audio/geo-en/${r}.mp3`),
   ...GAME_IDS.map((id) => `/audio/help-el/${id}.mp3`),
   ...GAME_IDS.map((id) => `/audio/help-en/${id}.mp3`),
 ];
